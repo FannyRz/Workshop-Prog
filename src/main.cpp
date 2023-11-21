@@ -137,7 +137,7 @@ void rotation90(sil::Image image)
         };
     };
 
-    canvas.save("output/08_rotaton90.png");
+    canvas.save("output/08_rotation90.png");
 };
 
 void RGBSplit(sil::Image image, sil::Image result)
@@ -164,6 +164,36 @@ void RGBSplit(sil::Image image, sil::Image result)
     result.save("output/09_RGBSplit.png");
 }
 
+void Luminosite(sil::Image image) 
+{
+    int answer{0};
+    std::cout << "lighten (1) or darken (0) ?" << std::endl;
+    std::cin >> answer ;
+
+    switch (answer)
+    {
+    case 1:
+        for (glm::vec3 & color : image.pixels()) 
+        {
+            color.r = sqrt(color.r);
+            color.g = sqrt(color.g);
+            color.b = sqrt(color.b);
+        };
+        break;
+    
+    default:
+        for (glm::vec3 & color : image.pixels()) 
+        {
+            color.r = pow (color.r, 2);
+            color.g = pow (color.g, 2);
+            color.b = pow (color.b, 2);
+        };
+        break;
+    }
+
+    image.save("output/10_Luminosity.png");
+};
+
 int main()
 {
     set_random_seed(0);
@@ -171,6 +201,7 @@ int main()
     sil::Image lowContrast{"images/photo_faible_contraste.jpg"};
     sil::Image blackRectangle{300, 200};
     sil::Image result2{300, 345};   //meme taille que logo
+    sil::Image photo{"images/photo.jpg"};
 
     seulementLeVert(logo);
     echangeRougeBleu(logo);
@@ -182,4 +213,5 @@ int main()
     bruit(logo);
     rotation90(logo);
     RGBSplit(logo, result2);
+    Luminosite(photo);
 }
