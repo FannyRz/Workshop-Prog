@@ -106,10 +106,7 @@ void miroir2 (sil::Image image) /*2e version*/
 
 void bruit(sil::Image image) 
 {
-    int noiseLvl{0};
-
-    std::cout << "Enter noise level" << std::endl;
-    std::cin >> noiseLvl;
+    int noiseLvl = random_int(1, 5000);
     
     for (int i{0}; i < noiseLvl; i++)
     {
@@ -248,17 +245,38 @@ void mosaique(sil::Image image)
         }
     }
     newImageMosaic.save("output/14_mosaique.png");
-};
+}
+
+void glitch(sil::Image image) 
+{
+    int glitchLvl = random_int(1, 10);
+
+    for (int repetitions = 0; repetitions < glitchLvl; repetitions++)
+    {
+        int xRectangle = random_int(1, 20);
+        int yRectangle = random_int(1, 10);
+        int gapBetweenPixels = random_int(1, 100);
+
+        for (int x{0}; x < xRectangle; x++)
+        {
+            for (int y{0}; y < yRectangle; y++)
+            {
+                std::swap(image.pixel(x, y), image.pixel(x + gapBetweenPixels, y + gapBetweenPixels));
+            }
+        }
+    }
+    image.save("output/16_glitch.png");
+}
 
 int main()
 {
-    set_random_seed(0);
     sil::Image logo{"images/logo.png"};
-    sil::Image lowContrast{"images/photo_faible_contraste.jpg"};
-    sil::Image blackRectangle{300, 200};
-    sil::Image image_noire{500/*width*/, 500/*height*/};  
-    sil::Image result2{300, 345};   //meme taille que logo
     sil::Image photo{"images/photo.jpg"};
+    sil::Image lowContrast{"images/photo_faible_contraste.jpg"};
+
+    sil::Image blackRectangle{300, 200};
+    sil::Image image_noire{500, 500};  
+    sil::Image result2{300, 345};
 
     /*seulementLeVert(logo);
     echangeRougeBleu(logo);
@@ -274,4 +292,6 @@ int main()
     disque(image_noire);
     cercle(image_noire);
     mosaique(logo);*/
+
+    glitch(logo);
 }
