@@ -266,4 +266,6 @@ int main()
     Luminosite(photo);
     disque(image_noire);
     cercle(image_noire);*/
+
+    mosaique(logo);
 }
