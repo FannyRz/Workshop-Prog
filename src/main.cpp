@@ -85,7 +85,6 @@ void miroirReverse (sil::Image image)
 
 void miroir2 (sil::Image image) /*2e version*/
 {
-    // On passe sur tous les x et tous les y, et on accède au pixel correspondant :
     for (float x{0}; x < image.width()/2.f; x++)
     {
         for (float y{0}; y < image.height(); y++)
@@ -127,17 +126,17 @@ void bruit(sil::Image image)
 
 void rotation90(sil::Image image) 
 {
-    sil::Image canvas{image.height(), image.width()};
+    sil::Image newImageRotation90{image.height(), image.width()};
 
     for (int x{0}; x < image.width(); x++)
     {
         for (int y{0}; y < image.height(); y++)
         {
-            canvas.pixel(image.height() - 1 - y, x) = image.pixel(x, y);
+            newImageRotation90.pixel(image.height() - 1 - y, x) = image.pixel(x, y);
         };
     };
 
-    canvas.save("output/08_rotation90.png");
+    newImageRotation90.save("output/08_rotation90.png");
 };
 
 void RGBSplit(sil::Image image, sil::Image result)
@@ -231,6 +230,19 @@ void cercle (sil::Image image){
     image.save("output/12_cercle.png");
 }
 
+void mosaique(sil::Image image) 
+{
+    sil::Image newImageMosaique{300, 200};
+    
+    for (glm::vec3 & color : image.pixels()) 
+    {
+        color.r = 0.f /*mets la composante rouge à 0. 1 couleur = glm::vec3 */ ;
+        color.b = 0.f;
+    };
+    
+    newImageMosaique.save("output/14_mosaique.png");
+};
+
 int main()
 {
     set_random_seed(0);
@@ -241,7 +253,7 @@ int main()
     sil::Image result2{300, 345};   //meme taille que logo
     sil::Image photo{"images/photo.jpg"};
 
-    seulementLeVert(logo);
+    /*seulementLeVert(logo);
     echangeRougeBleu(logo);
     noirEtBlanc(logo);
     negatif(logo);
@@ -253,5 +265,5 @@ int main()
     RGBSplit(logo, result2);
     Luminosite(photo);
     disque(image_noire);
-    cercle(image_noire);
+    cercle(image_noire);*/
 }
