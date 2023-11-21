@@ -192,7 +192,23 @@ void Luminosite(sil::Image image)
     }
 
     image.save("output/10_Luminosity.png");
-};
+}
+
+void disque (sil::Image image){
+    // On passe sur tous les x et tous les y, et on accède au pixel correspondant :
+    for (int x{0}; x < image.width(); x++)//300
+    {
+        for (int y{0}; y < image.height(); y++)//345
+        {   
+            if(sqrt((x-image.width()/2)*(x-image.width()/2)+(y-image.height()/2)*(y-image.width()))<=100){  //le centre du cercle a pour coordonnees(255,255)
+                image.pixel(x,y).r = 1.f;
+                image.pixel(x,y).g = 1.f;
+                image.pixel(x,y).b = 1.f;
+            }           
+        }
+    }
+    image.save("output/disque.png");
+}
 
 int main()
 {
@@ -214,4 +230,5 @@ int main()
     rotation90(logo);
     RGBSplit(logo, result2);
     Luminosite(photo);
+    disque(logo);
 }
