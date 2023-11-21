@@ -232,14 +232,19 @@ void cercle (sil::Image image){
 
 void mosaique(sil::Image image) 
 {
-    sil::Image newImageMosaique{300, 200};
+    sil::Image newImageMosaique{5*image.width(), 5*image.height()};
     
-    for (glm::vec3 & color : image.pixels()) 
+    for (int rowNewImageMosaique{0}; rowNewImageMosaique < 5*image.width(); rowNewImageMosaique += image.width())
     {
-        color.r = 0.f /*mets la composante rouge à 0. 1 couleur = glm::vec3 */ ;
-        color.b = 0.f;
-    };
-    
+        for (int x{0}; x < image.width(); x++)
+        {
+            for (int y{0}; y < image.height(); y++)
+            {
+                newImageMosaique.pixel(x, y) = image.pixel(x, y);
+            }
+        }
+    }
+
     newImageMosaique.save("output/14_mosaique.png");
 };
 
