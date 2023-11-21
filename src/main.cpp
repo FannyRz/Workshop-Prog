@@ -232,20 +232,22 @@ void cercle (sil::Image image){
 
 void mosaique(sil::Image image) 
 {
-    sil::Image newImageMosaique{5*image.width(), 5*image.height()};
+    sil::Image newImageMosaic{5*image.width(), 5*image.height()};
     
-    for (int rowNewImageMosaique{0}; rowNewImageMosaique < 5*image.width(); rowNewImageMosaique += image.width())
+    for (int colnewImageMosaic{0}; colnewImageMosaic < 5*image.height(); colnewImageMosaic += image.height())
     {
-        for (int x{0}; x < image.width(); x++)
+        for (int rownewImageMosaic{0}; rownewImageMosaic < 5*image.width(); rownewImageMosaic += image.width())
         {
-            for (int y{0}; y < image.height(); y++)
+            for (int x{0}; x < image.width(); x++)
             {
-                newImageMosaique.pixel(x, y) = image.pixel(x, y);
+                for (int y{0}; y < image.height(); y++)
+                {
+                    newImageMosaic.pixel(x + rownewImageMosaic, y + colnewImageMosaic) = image.pixel(x, y);
+                }
             }
         }
     }
-
-    newImageMosaique.save("output/14_mosaique.png");
+    newImageMosaic.save("output/14_mosaique.png");
 };
 
 int main()
@@ -270,7 +272,6 @@ int main()
     RGBSplit(logo, result2);
     Luminosite(photo);
     disque(image_noire);
-    cercle(image_noire);*/
-
-    mosaique(logo);
+    cercle(image_noire);
+    mosaique(logo);*/
 }
