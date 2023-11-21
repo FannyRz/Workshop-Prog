@@ -35,7 +35,7 @@ void noirEtBlanc(sil::Image image)
         color.b = moy;
     };
 
-    image.save("output/03_NoirEtBlanc.png");
+    image.save("output/03_noirEtBlanc.png");
 };
 
 void negatif(sil::Image image) 
@@ -47,7 +47,7 @@ void negatif(sil::Image image)
         color.b = 1 - color.b;
     };
 
-    image.save("output/04_Negatif.png");
+    image.save("output/04_negatif.png");
 };
 
 void degrade(sil::Image image) 
@@ -122,7 +122,7 @@ void bruit(sil::Image image)
         image.pixel(x, y).b = random_float(0, 1);
     };
 
-    image.save("output/07_Noise.png");
+    image.save("output/07_bruit.png");
 };
 
 void rotation90(sil::Image image) 
@@ -137,7 +137,7 @@ void rotation90(sil::Image image)
         };
     };
 
-    canvas.save("output/08_90deg.png");
+    canvas.save("output/08_rotaton90.png");
 };
 
 void RGBSplit(sil::Image image, sil::Image result)
