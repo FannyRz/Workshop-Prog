@@ -249,19 +249,25 @@ void mosaique(sil::Image image)
 
 void glitch(sil::Image image) 
 {
-    int glitchLvl = random_int(1, 10);
+    sil::Image glitchedLogo{"images/logo.png"};
+
+    int glitchLvl = random_int(1, 100);
 
     for (int repetitions = 0; repetitions < glitchLvl; repetitions++)
     {
-        int xRectangle = random_int(1, 20);
-        int yRectangle = random_int(1, 10);
-        int gapBetweenPixels = random_int(1, 100);
+        int startingPointX = random_int(0, image.width() - 40);
+        int startingPointY = random_int(0, image.height() - 40);
+        int newPointX = random_int(0, image.width() - 40);
+        int newPointY = random_int(0, image.height() - 40);
+        
+        int widthRectangle = random_int(10, 40);
+        int heightRectangle = random_int(1, 10);
 
-        for (int x{0}; x < xRectangle; x++)
+        for (int x{0}; x < widthRectangle; x++)
         {
-            for (int y{0}; y < yRectangle; y++)
+            for (int y{0}; y < heightRectangle; y++)
             {
-                std::swap(image.pixel(x, y), image.pixel(x + gapBetweenPixels, y + gapBetweenPixels));
+                std::swap(image.pixel(x, y), image.pixel(startingPointX + x, startingPointY + y));
             }
         }
     }
@@ -291,7 +297,9 @@ int main()
     Luminosite(photo);
     disque(image_noire);
     cercle(image_noire);
-    mosaique(logo);*/
+    mosaique(logo);
+    
+    std::swap(image.pixel(x, y), image.pixel(startingPointX + x, startingPointY + y));*/
 
     glitch(logo);
 }
