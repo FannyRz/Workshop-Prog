@@ -246,37 +246,38 @@ void mosaique(sil::Image image)
 
 void mosaiqueMiroir(sil::Image image) 
 {
-    sil::Image newImageMirroredMosaic{5*image.width(), 5*image.height()};
-    
-    /*création de l'image en mosaique (pt de départ)*/ for (int colnewImageMosaic{0}; colnewImageMosaic < 5*image.height(); colnewImageMosaic += image.height())
+    sil::Image canvasMirroredMosaic{5*image.width(), 5*image.height()};
+    int startingPointx{};
+    int startingPointy{};
+
+    for (int canvasRow{0}; canvasRow < 5; canvasRow++) 
     {
-        for (int rownewImageMosaic{0}; rownewImageMosaic < 5*image.width(); rownewImageMosaic += image.width())
+        for (int j=0; j<5; j++) 
         {
-            for (int x{0}; x < image.width(); x++)
+            for (int xEntryImage{0}; xEntryImage < image.width(); xEntryImage++)
             {
-                for (int y{0}; y < image.height(); y++)
+                for (int yEntryImage{0}; yEntryImage < image.height(); yEntryImage++)
                 {
-                    newImageMirroredMosaic.pixel(x + rownewImageMosaic, y + colnewImageMosaic) = image.pixel(x, y);
+                    // Choix d'une symétrie verticale ou non
+                    if (canvasRow%2 == 1) {
+                        startingPointx = image.width()-xEntryImage-1;
+                    } else {
+                        startingPointx = xEntryImage;
+                    }
+                    // Choix d'une symétrie horizontale ou non
+                    if (j%2 == 1) {
+                        startingPointy = image.height()-yEntryImage-1;
+                    } else {
+                        startingPointy = yEntryImage;
+                    }
+
+                    // Affichage de l'image
+                    canvasMirroredMosaic.pixel(canvasRow*image.width()+xEntryImage, j*image.height()+yEntryImage) = image.pixel(startingPointx, startingPointy);
                 }
             }
         }
-    } 
-
-    /*reverse 1 col. / 2*/ for (int colnewImageMosaic2 {0}; colnewImageMosaic2 < newImageMirroredMosaic.width(); colnewImageMosaic2 += image.height())
-    {
-        
-        std::reverse(image.pixels().begin() + colnewImageMosaic2, image.pixels().begin() + colnewImageMosaic2 + image.width());
     }
-
-    /*        
-        if (j%2 == 1) {
-                        y_direction = image.height()-y-1;
-                    } else {
-                        y_direction = y;
-                    }
-    */
-
-    newImageMirroredMosaic.save("output/15_mosaiqueMiroir.png");
+    canvasMirroredMosaic.save("output/15_mosaiqueMiroir.png");
 }
 
 void glitch(sil::Image image) 
@@ -396,11 +397,12 @@ int main()
     // }
 
     // mosaique(logo);  
-    mosaiqueMiroir(logo);
-
+    // mosaiqueMiroir(logo);
     // glitch(logo);
+
     // vortex(logo,result2);
-    convolutions(logo, result1 );
+    
+    // convolutions(logo, result1 );
 
     //convolutions(logo, result1 );
 }
