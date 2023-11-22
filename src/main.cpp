@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <iostream>
 #include <cmath>
+#include <vector>
 #include <glm/gtx/matrix_transform_2d.hpp>
 
 float pi {M_PI};
@@ -304,10 +305,9 @@ void glitch(sil::Image image)
     image.save("output/16_glitch.png");
 }
 
-glm::vec2 rotated(glm::vec2 v, float angle) // glm::vec2 correspond a la position d'un pixel
+glm::vec2 rotated(glm::vec2 point, glm::vec2 center_of_rotation, float angle)
 {
-    return glm::vec2{glm::rotate(glm::mat3{1.f}, angle) * glm::vec3{v, 1.f}};
-    //retourne une nouvelle position du pixel
+    return glm::vec2{glm::rotate(glm::mat3{1.f}, angle) * glm::vec3{point - center_of_rotation, 0.f}} + center_of_rotation;
 } 
     
 void vortex(sil::Image image, sil::Image result2)
@@ -316,12 +316,11 @@ void vortex(sil::Image image, sil::Image result2)
     {
         for (int y{0}; y < image.height(); y++)
         {   
-            if(sqrt((x-image.width()/2)*(x-image.width()/2)+(y-image.height()/2)*(y-image.height()/2))<=image.height()/2-x && sqrt((x-image.width()/2)*(x-image.width()/2)+(y-image.height()/2)*(y-image.height()/2))>=image.height()/2-x){  
-                glm::vec2 nouvelle_position {rotated({x,y},x+10.f)}; 
-                if((nouvelle_position.x>=0 && nouvelle_position.x<image.width()) && (nouvelle_position.y>=0 && nouvelle_position.y<image.height())){
-                    result2.pixel(x,y) = image.pixel(nouvelle_position.x, nouvelle_position.y);
-                }
-            } 
+            double distance {sqrt((x-image.width()/2)*(x-image.width()/2)+(y-image.height()/2)*(y-image.height()/2))};
+            glm::vec2 nouvelle_position {rotated({x,y},{image.width()/2, image.height()/2},distance/10)}; 
+            if(nouvelle_position.x>=0 && nouvelle_position.x<image.width() && nouvelle_position.y<image.height() &&nouvelle_position.y>=0){
+                result2.pixel(x,y) = image.pixel(nouvelle_position.x, nouvelle_position.y);
+            }
         }
     }
     result2.save("output/18_vortex.png");
@@ -339,26 +338,73 @@ void convolutions (sil::Image image, sil::Image result)
         std::cin >> kernel;
     }
     
-    for (int x{kernel/2}; x < image.width()-kernel/2; x++)//300
+    for (int x{0}; x < image.width(); x++)//300
     {
-        for (int y{kernel/2}; y < image.height()-kernel/2; y++)//345
+        for (int y{0}; y < image.height(); y++)//345
         {   
             float red_moy {};
             float blue_moy {};
             float green_moy {};
             for(int n{x-kernel/2} ; n<=x+kernel/2; n++){
                 for(int z{y-kernel/2} ; z<=y+kernel/2; z++){
-                    red_moy += image.pixel(n,z).r;
-                    blue_moy += image.pixel(n,z).b;
-                    green_moy += image.pixel(n,z).g;
+                    if(n>=0 && n<image.width() && z>=0 && z<image.height()){
+                        red_moy += image.pixel(n,z).r;
+                        blue_moy += image.pixel(n,z).b;
+                        green_moy += image.pixel(n,z).g;
+                    }
                 }
             }
             result.pixel(x,y).r = red_moy/(static_cast<float>(kernel)*static_cast<float>(kernel));
             result.pixel(x,y).b = blue_moy/(static_cast<float>(kernel)*static_cast<float>(kernel));
             result.pixel(x,y).g = green_moy/(static_cast<float>(kernel)*static_cast<float>(kernel));
+
         }
     }
     result.save("output/21_convolutions.png");
+}
+
+void algoGeneriqueDeConvolution(std::vector<std::vector<float>> kernel, sil::Image image, sil::Image result)
+{
+    float total {0.f}; 
+    for(int i{0} ; i<3 ; i++){
+        for(int j{0} ; j<3 ; j++){
+            total = total +  kernel[i][j];
+        }
+    }   
+
+    for (int x{0}; x < image.width(); x++)
+    {
+        for (int y{0}; y < image.height(); y++)
+        {   
+            float red_moy {};
+            float blue_moy {};
+            float green_moy {};  
+            int ligne_matrice {2};    
+            int colonne_matrice {0};     
+            for(int n{x-1} ; n<=x+1; n++){
+                for(int z{y-1} ; z<=y+1; z++){
+                    if(n>=0 && n<image.width() && z>=0 && z<image.height()){
+                        red_moy += image.pixel(n,z).r*kernel[ligne_matrice][colonne_matrice];
+                        blue_moy += image.pixel(n,z).b*kernel[ligne_matrice][colonne_matrice];
+                        green_moy += image.pixel(n,z).g*kernel[ligne_matrice][colonne_matrice];
+                        ligne_matrice --;
+                    }
+                }
+                colonne_matrice ++;
+                ligne_matrice = 2;
+            }
+            if(total!=0){
+                result.pixel(x,y).r = red_moy/total;
+                result.pixel(x,y).b = blue_moy/total;
+                result.pixel(x,y).g = green_moy/total;
+            }else{
+                result.pixel(x,y).r = red_moy;
+                result.pixel(x,y).b = blue_moy;
+                result.pixel(x,y).g = green_moy;
+            }
+        }
+    }
+    result.save("output/22_algoGeneriqueDeConvolution.png");
 }
 
 int main()
@@ -369,7 +415,6 @@ int main()
 
     sil::Image blackRectangle{300, 200};
     sil::Image image_noire{500, 500};  
-    sil::Image result1{301, 346};
     sil::Image result2{300, 345};
 
     // seulementLeVert(logo);
@@ -396,11 +441,16 @@ int main()
     // }
 
     // mosaique(logo);  
-    mosaiqueMiroir(logo);
+    // mosaiqueMiroir(logo);
 
     // glitch(logo);
     // vortex(logo,result2);
-    convolutions(logo, result1 );
+    // convolutions(logo, result2);
 
-    //convolutions(logo, result1 );
+    // kernel pour convolution
+    // std::vector<std::vector<float>> kernel {{1.f/9.f,1.f/9.f,1.f/9.f},{1.f/9.f,1.f/9.f,1.f/9.f},{1.f/9.f,1.f/9.f,1.f/9.f}};
+    // Autre kernel
+    // std::vector<std::vector<float>> kernel {{-1,-1,-1},{-1,8,-1},{-1,-1,-1}};
+    // algoGeneriqueDeConvolution(kernel,logo,result2);
+
 }
