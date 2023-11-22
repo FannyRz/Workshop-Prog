@@ -334,7 +334,8 @@ void tramage(sil::Image image)
     
     for (glm::vec3 & color : image.pixels())
     {
-        if (color.r <= .5)
+        color.r+=random_float(0, 1) - .5;
+        if (color.r > .5 )
         {
             color.r = 0;
             color.g = 0;
@@ -405,18 +406,17 @@ int main()
     // rotation90(logo);
     // RGBSplit(logo, result2);
     // luminosite(photo);
-    // disque(image_noire);
-    
-    // float thickness {};
-    // std::cout << "Entrez l'epaisseur du cercle que vous souhaitez :" ;
-    // std::cin >> thickness;
-    // cercle(image_noire, 255, 255,thickness);
-
-    // {
+    // disque(image_noire);  
+    // { /*CERCLE*/
+    //     float thickness {};
+    //     std::cout << "Entrez l'epaisseur du cercle que vous souhaitez :" ;
+    //     std::cin >> thickness;
+    //     cercle(image_noire, 255, 255,thickness);
+    // }
+    // { /*ROSACE*/
     //     sil::Image image_noire{500, 500};
     //     rosace(image_noire,thickness);
     // }
-
     // mosaique(logo);  
     // mosaiqueMiroir(logo);
     // glitch(logo);
@@ -424,7 +424,5 @@ int main()
     // vortex(logo,result2);
     tramage(photo);
     
-    convolutions(logo, result1 );
-
-    //convolutions(logo, result1 );
+    // convolutions(logo, result1 );
 }
