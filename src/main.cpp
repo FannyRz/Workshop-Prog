@@ -73,17 +73,16 @@ void degrade(sil::Image image)
     image.save("output/05_degrade.png");
 }
 
-void miroirReverse (sil::Image image) 
+void miroirReverse(sil::Image image) 
 {
     for (int i{0}; i < image.height()*image.width(); i+=image.width())
     {
         std::reverse(image.pixels().begin() + i, image.pixels().begin() + i + image.width()); 
     }
-
     image.save("output/06_miroirReverse.png");
 }
 
-void miroir2 (sil::Image image) /*2e version*/
+void miroir2(sil::Image image) /*2e version*/
 {
     for (float x{0}; x < image.width()/2.f; x++)
     {
@@ -116,10 +115,9 @@ void bruit(sil::Image image)
         image.pixel(x, y).r = random_float(0, 1);
         image.pixel(x, y).g = random_float(0, 1);
         image.pixel(x, y).b = random_float(0, 1);
-    };
-
+    }
     image.save("output/07_bruit.png");
-};
+}
 
 void rotation90(sil::Image image) 
 {
@@ -132,7 +130,6 @@ void rotation90(sil::Image image)
             newImageRotation90.pixel(image.height() - 1 - y, x) = image.pixel(x, y);
         }
     }
-
     newImageRotation90.save("output/08_rotation90.png");
 }
 
@@ -160,7 +157,7 @@ void RGBSplit(sil::Image image, sil::Image result)
     result.save("output/09_RGBSplit.png");
 }
 
-void Luminosite(sil::Image image) 
+void luminosite(sil::Image image) 
 {
     int answer{0};
     std::cout << "lighten (1) or darken (0) ?" << std::endl;
@@ -189,7 +186,7 @@ void Luminosite(sil::Image image)
     image.save("output/10_Luminosity.png");
 }
 
-void disque (sil::Image image){
+void disque(sil::Image image){
     // On passe sur tous les x et tous les y, et on accède au pixel correspondant :
     for (int x{0}; x < image.width(); x++)
     {
@@ -205,10 +202,10 @@ void disque (sil::Image image){
     image.save("output/11_disque.png");
 }
 
-void cercle (sil::Image image){
+void cercle(sil::Image image){
 
     float thickness {};
-    std::cout << "Entrez l'epaisseur du cercle que vous souhaitez :" ;
+    std::cout << "Entrez l'épaisseur du cercle que vous souhaitez :" ;
     std::cin >> thickness;
 
     // On passe sur tous les x et tous les y, et on accède au pixel correspondant :
@@ -254,9 +251,14 @@ void mosaiqueMiroir(sil::Image image)
     {
         for (int rownewImageMosaic{0}; rownewImageMosaic < 5*image.width(); rownewImageMosaic += image.width())
         {
-            for (int i{0}; i < image.height()*image.width(); i+=image.width())
+            /*int isMirrored {(a > b) ? 0 : 1 };*/
+
+            for (int x{0}; x < image.width(); x++)
             {
-                std::reverse(image.pixels().begin() + i, image.pixels().begin() + i + image.width()); 
+                for (int y{0}; y < image.height(); y++)
+                {
+                    newImageMirroredMosaic.pixel(x + rownewImageMosaic, y + colnewImageMosaic) = image.pixel(x, y);
+                }
             }
         }
     }
