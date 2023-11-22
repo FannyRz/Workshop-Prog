@@ -420,6 +420,8 @@ int main()
     // mosaique(logo);  
     // mosaiqueMiroir(logo);
     // glitch(logo);
+    // vortex(logo,result2);
+    convolutions(logo, result1 );
 
     // vortex(logo,result2);
     tramage(photo);
