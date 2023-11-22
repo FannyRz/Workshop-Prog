@@ -291,11 +291,10 @@ void glitch(sil::Image image)
     image.save("output/16_glitch.png");
 }
 
-glm::vec2 rotated(glm::vec2 v, float angle) // glm::vec2 correspond a la position d'un pixel
+glm::vec2 rotated(glm::vec2 point, glm::vec2 center_of_rotation, float angle)
 {
-    return glm::vec2{glm::rotate(glm::mat3{1.f}, angle) * glm::vec3{v, 1.f}};
-    //retourne une nouvelle position du pixel
-} 
+    return glm::vec2{glm::rotate(glm::mat3{1.f}, angle) * glm::vec3{point - center_of_rotation, 0.f}} + center_of_rotation;
+}
     
 void vortex(sil::Image image, sil::Image result2)
 {
@@ -303,12 +302,11 @@ void vortex(sil::Image image, sil::Image result2)
     {
         for (int y{0}; y < image.height(); y++)
         {   
-            if(sqrt((x-image.width()/2)*(x-image.width()/2)+(y-image.height()/2)*(y-image.height()/2))<=image.height()/2-x && sqrt((x-image.width()/2)*(x-image.width()/2)+(y-image.height()/2)*(y-image.height()/2))>=image.height()/2-x){  
-                glm::vec2 nouvelle_position {rotated({x,y},x+10.f)}; 
-                if((nouvelle_position.x>=0 && nouvelle_position.x<image.width()) && (nouvelle_position.y>=0 && nouvelle_position.y<image.height())){
-                    result2.pixel(x,y) = image.pixel(nouvelle_position.x, nouvelle_position.y);
-                }
-            } 
+            double distance {sqrt((x-image.width()/2)*(x-image.width()/2)+(y-image.height()/2)*(y-image.height()/2))};
+            glm::vec2 nouvelle_position {rotated({x,y},{image.width()/2, image.height()/2},distance/10)}; 
+            if(nouvelle_position.x>=0 && nouvelle_position.x<image.width() && nouvelle_position.y<image.height() &&nouvelle_position.y>=0){
+                result2.pixel(x,y) = image.pixel(nouvelle_position.x, nouvelle_position.y);
+            }
         }
     }
     result2.save("output/18_vortex.png");
@@ -382,11 +380,10 @@ int main()
     // }
 
     // mosaique(logo);  
-    mosaiqueMiroir(logo);
+    // mosaiqueMiroir(logo);
 
     // glitch(logo);
+    // vortex(logo,result2);
+    // convolutions(logo, result1 );
 
-    //vortex(logo,result2);
-
-    //convolutions(logo, result1 );
 }
