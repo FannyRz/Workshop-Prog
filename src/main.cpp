@@ -1,9 +1,13 @@
+#define _USE_MATH_DEFINES
 #include <sil/sil.hpp>
 #include "random.hpp"
 #include <algorithm>
 #include <iostream>
 #include <cmath>
+#include <glm/gtx/matrix_transform_2d.hpp>
 
+float pi {M_PI};
+    
 void seulementLeVert(sil::Image image) 
 {
     for (glm::vec3 & color : image.pixels()) 
@@ -205,18 +209,14 @@ void disque (sil::Image image){
     image.save("output/11_disque.png");
 }
 
-void cercle (sil::Image image){
-
-    float thickness {};
-    std::cout << "Entrez l'epaisseur du cercle que vous souhaitez :" ;
-    std::cin >> thickness;
+void cercle (sil::Image & image, int abcisse, int ordonnee, int thickness){  //coordonnee du centre du cerclee 
 
     // On passe sur tous les x et tous les y, et on accède au pixel correspondant :
     for (int x{0}; x < image.width(); x++)//300
     {
         for (int y{0}; y < image.height(); y++)//345
         {   
-            if(sqrt((x-image.width()/2)*(x-image.width()/2)+(y-image.height()/2)*(y-image.height()/2))<=100.f && sqrt((x-image.width()/2)*(x-image.width()/2)+(y-image.height()/2)*(y-image.height()/2))>=100.f-thickness){  //le centre du cercle a pour coordonnees(255,255)
+            if(sqrt((x-abcisse)*(x-abcisse)+(y-ordonnee)*(y-ordonnee))<=100.f && sqrt((x-abcisse)*(x-abcisse)+(y-ordonnee)*(y-ordonnee))>=100.f-thickness){  //le centre du cercle a pour coordonnees(255,255)
                 image.pixel(x,y).r = 1.f;
                 image.pixel(x,y).g = 1.f;
                 image.pixel(x,y).b = 1.f;
@@ -224,6 +224,15 @@ void cercle (sil::Image image){
         }
     }
     image.save("output/12_cercle.png");
+}
+
+void rosace (sil::Image & image,int thickness){  
+
+    cercle(image,image.width()/2, image.height()/2,thickness);
+    for(int i {0}; i<6 ; i++){
+        cercle(image,image.width()/2 + 100*cos(i*((2*pi)/6)), image.height()/2 + 100*sin(i*((2*pi)/6)) ,thickness);
+    }
+    image.save("output/13_rosace.png");
 }
 
 void mosaique(sil::Image image) 
@@ -288,31 +297,99 @@ void glitch(sil::Image image)
     image.save("output/16_glitch.png");
 }
 
+glm::vec2 rotated(glm::vec2 v, float angle) // glm::vec2 correspond a la position d'un pixel
+{
+    return glm::vec2{glm::rotate(glm::mat3{1.f}, angle) * glm::vec3{v, 1.f}};
+    //retourne une nouvelle position du pixel
+} 
+    
+void vortex(sil::Image image, sil::Image result2){
+    for (int x{0}; x < image.width(); x++)
+    {
+        for (int y{0}; y < image.height(); y++)
+        {   
+            if(sqrt((x-image.width()/2)*(x-image.width()/2)+(y-image.height()/2)*(y-image.height()/2))<=image.height()/2-x && sqrt((x-image.width()/2)*(x-image.width()/2)+(y-image.height()/2)*(y-image.height()/2))>=image.height()/2-x){  
+                glm::vec2 nouvelle_position {rotated({x,y},x+10.f)}; 
+                if((nouvelle_position.x>=0 && nouvelle_position.x<image.width()) && (nouvelle_position.y>=0 && nouvelle_position.y<image.height())){
+                    result2.pixel(x,y) = image.pixel(nouvelle_position.x, nouvelle_position.y);
+                }
+            } 
+        }
+    }
+    result2.save("output/18_vortex.png");
+}
+
+void convolutions (sil::Image image, sil::Image result){
+
+    int kernel {};
+    std::cout << "Entrez la dimension de votre kernel (nombre impair) : " ;
+    std::cin >> kernel;
+    for (int x{1}; x < image.width()-1; x++)//300
+    {
+        for (int y{1}; y < image.height()-1; y++)//345
+        {   /*float red_moy {(image.pixel(x,y).r+image.pixel(x-1,y-1).r+image.pixel(x,y-1).r+image.pixel(x+1,y-1).r+image.pixel(x-1,y).r+image.pixel(x+1,y).r+image.pixel(x-1,y+1).r+image.pixel(x,y+1).r+image.pixel(x+1,y+1).r)/9.f} ;
+            float blue_moy {(image.pixel(x,y).b+image.pixel(x-1,y-1).b+image.pixel(x,y-1).b+image.pixel(x+1,y-1).b+image.pixel(x-1,y).b+image.pixel(x+1,y).b+image.pixel(x-1,y+1).b+image.pixel(x,y+1).b+image.pixel(x+1,y+1).b)/9.f} ;
+            float green_moy {(image.pixel(x,y).g+image.pixel(x-1,y-1).g+image.pixel(x,y-1).g+image.pixel(x+1,y-1).g+image.pixel(x-1,y).g+image.pixel(x+1,y).g+image.pixel(x-1,y+1).g+image.pixel(x,y+1).g+image.pixel(x+1,y+1).g)/9.f} ;
+            result.pixel(x,y).r = red_moy;
+            result.pixel(x,y).b = blue_moy;
+            result.pixel(x,y).g = green_moy;*/
+            float red_moy {};
+            float blue_moy {};
+            float green_moy {};
+            for(int n{x-kernel/2} ; n<x+kernel/2; n++){
+                for(int z{y-kernel/2} ; z<y+kernel/2; z++){
+                    red_moy += image.pixel(n,z).r;
+                    blue_moy += image.pixel(n,z).b;
+                    green_moy += image.pixel(n,z).g;
+                }
+            }
+            result.pixel(x,y).r = red_moy/(static_cast<float>(kernel)*static_cast<float>(kernel));
+            result.pixel(x,y).b = blue_moy/(static_cast<float>(kernel)*static_cast<float>(kernel));
+            result.pixel(x,y).g = green_moy/(static_cast<float>(kernel)*static_cast<float>(kernel));
+        }
+    }
+    result.save("output/20_convolutions.png");
+}
+
 int main()
 {
+
     sil::Image logo{"images/logo.png"};
     sil::Image photo{"images/photo.jpg"};
     sil::Image lowContrast{"images/photo_faible_contraste.jpg"};
 
     sil::Image blackRectangle{300, 200};
     sil::Image image_noire{500, 500};  
+    sil::Image result1{301, 346};
     sil::Image result2{300, 345};
 
-    /*seulementLeVert(logo);
-    echangeRougeBleu(logo);
-    noirEtBlanc(logo);
-    negatif(logo);
-    degrade(blackRectangle);
-    miroirReverse(logo); 
-    miroir2(logo);
-    bruit(logo);
-    rotation90(logo);
-    RGBSplit(logo, result2);
-    Luminosite(photo);
-    disque(image_noire);
-    cercle(image_noire);
-    mosaique(logo);
-    glitch(logo);*/
+    // seulementLeVert(logo);
+    // echangeRougeBleu(logo);
+    // noirEtBlanc(logo);
+    // negatif(logo);
+    // degrade(blackRectangle);
+    // miroirReverse(logo); 
+    // miroir2(logo);
+    // bruit(logo);
+    // rotation90(logo);
+    // RGBSplit(logo, result2);
+    // Luminosite(photo);
+    // disque(image_noire);
 
-    mosaiqueMiroir(logo);
+    // mosaique(logo);  
+    mosaiqueMiroir(logo);  
+    // std::swap(image.pixel(x, y), image.pixel(startingPointX + x, startingPointY + y));
+    // glitch(logo);
+
+    // float thickness {};
+    // std::cout << "Entrez l'epaisseur du cercle que vous souhaitez :" ;
+    // std::cin >> thickness;
+    // cercle(image_noire,255,255,thickness);
+
+    // {
+    //     sil::Image image_noire{500, 500};
+    //     rosace(image_noire,thickness);
+    // }
+    //vortex(logo,result2);
+    //convolutions(logo, result1 );
 }
