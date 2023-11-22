@@ -332,21 +332,22 @@ void convolutions (sil::Image image, sil::Image result)
     int kernel {};
     std::cout << "Entrez la dimension de votre kernel (nombre impair) : " ;
     std::cin >> kernel;
+
+    while(kernel%2==0){
+        std::cout << "Probleme, vous avez entrez un nombre pair. Veuillez recommencer. " << std::endl;
+        std::cout << "Entrez la dimension de votre kernel (nombre impair) :" << std::endl;
+        std::cin >> kernel;
+    }
     
-    for (int x{1}; x < image.width()-1; x++)//300
+    for (int x{kernel/2}; x < image.width()-kernel/2; x++)//300
     {
-        for (int y{1}; y < image.height()-1; y++)//345
-        {   /*float red_moy {(image.pixel(x,y).r+image.pixel(x-1,y-1).r+image.pixel(x,y-1).r+image.pixel(x+1,y-1).r+image.pixel(x-1,y).r+image.pixel(x+1,y).r+image.pixel(x-1,y+1).r+image.pixel(x,y+1).r+image.pixel(x+1,y+1).r)/9.f} ;
-            float blue_moy {(image.pixel(x,y).b+image.pixel(x-1,y-1).b+image.pixel(x,y-1).b+image.pixel(x+1,y-1).b+image.pixel(x-1,y).b+image.pixel(x+1,y).b+image.pixel(x-1,y+1).b+image.pixel(x,y+1).b+image.pixel(x+1,y+1).b)/9.f} ;
-            float green_moy {(image.pixel(x,y).g+image.pixel(x-1,y-1).g+image.pixel(x,y-1).g+image.pixel(x+1,y-1).g+image.pixel(x-1,y).g+image.pixel(x+1,y).g+image.pixel(x-1,y+1).g+image.pixel(x,y+1).g+image.pixel(x+1,y+1).g)/9.f} ;
-            result.pixel(x,y).r = red_moy;
-            result.pixel(x,y).b = blue_moy;
-            result.pixel(x,y).g = green_moy;*/
+        for (int y{kernel/2}; y < image.height()-kernel/2; y++)//345
+        {   
             float red_moy {};
             float blue_moy {};
             float green_moy {};
-            for(int n{x-kernel/2} ; n<x+kernel/2; n++){
-                for(int z{y-kernel/2} ; z<y+kernel/2; z++){
+            for(int n{x-kernel/2} ; n<=x+kernel/2; n++){
+                for(int z{y-kernel/2} ; z<=y+kernel/2; z++){
                     red_moy += image.pixel(n,z).r;
                     blue_moy += image.pixel(n,z).b;
                     green_moy += image.pixel(n,z).g;
@@ -357,7 +358,7 @@ void convolutions (sil::Image image, sil::Image result)
             result.pixel(x,y).g = green_moy/(static_cast<float>(kernel)*static_cast<float>(kernel));
         }
     }
-    result.save("output/20_convolutions.png");
+    result.save("output/21_convolutions.png");
 }
 
 int main()
@@ -398,8 +399,8 @@ int main()
     mosaiqueMiroir(logo);
 
     // glitch(logo);
-
-    //vortex(logo,result2);
+    // vortex(logo,result2);
+    convolutions(logo, result1 );
 
     //convolutions(logo, result1 );
 }
