@@ -438,7 +438,7 @@ int main()
 
     sil::Image blackRectangle{300, 200};
     sil::Image image_noire{500, 500};  
-    sil::Image result2{300, 345};
+    sil::Image result{300, 345};
 
     // seulementLeVert(logo);
     // echangeRougeBleu(logo);
@@ -449,7 +449,7 @@ int main()
     // miroir2(logo);
     // bruit(logo);
     // rotation90(logo);
-    // RGBSplit(logo, result2);
+    // RGBSplit(logo, result);
     // luminosite(photo);
     // disque(image_noire);  
     // { /*CERCLE*/
@@ -459,6 +459,9 @@ int main()
     //     cercle(image_noire, 255, 255,thickness);
     // }
     // { /*ROSACE*/
+    //     float thickness {};
+    //     std::cout << "Entrez l'epaisseur pour les cercles que vous souhaitez :" ;
+    //     std::cin >> thickness;
     //     sil::Image image_noire{500, 500};
     //     rosace(image_noire,thickness);
     // }
@@ -466,14 +469,16 @@ int main()
     // mosaiqueMiroir(logo);
 
     // glitch(logo);
-    // vortex(logo,result2);
-    // convolutions(logo, result2);
+    // vortex(logo,result);
+    // convolutions(logo, result);
     // tramage(photo;)
 
-    // kernel pour convolution
-    // std::vector<std::vector<float>> kernel {{1.f/9.f,1.f/9.f,1.f/9.f},{1.f/9.f,1.f/9.f,1.f/9.f},{1.f/9.f,1.f/9.f,1.f/9.f}};
-    // Autre kernel
-    // std::vector<std::vector<float>> kernel {{-1,-1,-1},{-1,8,-1},{-1,-1,-1}};
-    // algoGeneriqueDeConvolution(kernel,logo,result2);
+    // { /*CONVOLUTION*/
+    //     kernel pour convolution
+    //     std::vector<std::vector<float>> kernel {{1.f/9.f,1.f/9.f,1.f/9.f},{1.f/9.f,1.f/9.f,1.f/9.f},{1.f/9.f,1.f/9.f,1.f/9.f}};
+    //     Autre kernel
+    //     std::vector<std::vector<float>> kernel {{-1,-1,-1},{-1,8,-1},{-1,-1,-1}};
+    //     algoGeneriqueDeConvolution(kernel,logo,result);
+    // }
 
 }
