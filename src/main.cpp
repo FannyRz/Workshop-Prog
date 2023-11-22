@@ -249,16 +249,14 @@ void mosaique(sil::Image image)
 
 void glitch(sil::Image image) 
 {
-    sil::Image glitchedLogo{"images/logo.png"};
-
-    int glitchLvl = random_int(1, 100);
+    int glitchLvl = random_int(20, 100);
 
     for (int repetitions = 0; repetitions < glitchLvl; repetitions++)
     {
         int startingPointX = random_int(0, image.width() - 40);
-        int startingPointY = random_int(0, image.height() - 40);
+        int startingPointY = random_int(0, image.height() - 10);
         int newPointX = random_int(0, image.width() - 40);
-        int newPointY = random_int(0, image.height() - 40);
+        int newPointY = random_int(0, image.height() - 10);
         
         int widthRectangle = random_int(10, 40);
         int heightRectangle = random_int(1, 10);
