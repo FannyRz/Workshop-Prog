@@ -10,20 +10,20 @@ void seulementLeVert(sil::Image image)
     {
         color.r = 0.f /*mets la composante rouge à 0. 1 couleur = glm::vec3 */ ;
         color.b = 0.f;
-    };
+    }
     
     image.save("output/01_seulementLeVert.png");
-};
+}
 
 void echangeRougeBleu(sil::Image image) 
 {
     for (glm::vec3 & color : image.pixels()) 
     {
         std::swap(color.r, color.b);
-    };
+    }
 
     image.save("output/02_echangeRougeBleu.png");
-};
+}
 
 void noirEtBlanc(sil::Image image) 
 {
@@ -33,10 +33,10 @@ void noirEtBlanc(sil::Image image)
         color.r = moy;
         color.g = moy;
         color.b = moy;
-    };
+    }
 
     image.save("output/03_noirEtBlanc.png");
-};
+}
 
 void negatif(sil::Image image) 
 {
@@ -45,10 +45,10 @@ void negatif(sil::Image image)
         color.r = 1 - color.r;
         color.g = 1 - color.g;
         color.b = 1 - color.b;
-    };
+    }
 
     image.save("output/04_negatif.png");
-};
+}
 
 void degrade(sil::Image image) 
 {
@@ -67,21 +67,21 @@ void degrade(sil::Image image)
             Attention : faire démarrer x à 1 et conv la division en float
             y = 0 car on s'en fiche de la ligne ici
             */
-        };
-    };
+        }
+    }
 
     image.save("output/05_degrade.png");
-};
+}
 
 void miroirReverse (sil::Image image) 
 {
     for (int i{0}; i < image.height()*image.width(); i+=image.width())
     {
         std::reverse(image.pixels().begin() + i, image.pixels().begin() + i + image.width()); 
-    };
+    }
 
     image.save("output/06_miroirReverse.png");
-};
+}
 
 void miroir2 (sil::Image image) /*2e version*/
 {
@@ -130,11 +130,11 @@ void rotation90(sil::Image image)
         for (int y{0}; y < image.height(); y++)
         {
             newImageRotation90.pixel(image.height() - 1 - y, x) = image.pixel(x, y);
-        };
-    };
+        }
+    }
 
     newImageRotation90.save("output/08_rotation90.png");
-};
+}
 
 void RGBSplit(sil::Image image, sil::Image result)
 {
@@ -174,7 +174,7 @@ void Luminosite(sil::Image image)
             color.r = sqrt(color.r);
             color.g = sqrt(color.g);
             color.b = sqrt(color.b);
-        };
+        }
         break;
     
     default:
@@ -183,10 +183,9 @@ void Luminosite(sil::Image image)
             color.r = pow (color.r, 2);
             color.g = pow (color.g, 2);
             color.b = pow (color.b, 2);
-        };
+        }
         break;
     }
-
     image.save("output/10_Luminosity.png");
 }
 
@@ -247,6 +246,23 @@ void mosaique(sil::Image image)
     newImageMosaic.save("output/14_mosaique.png");
 }
 
+void mosaiqueMiroir(sil::Image image) 
+{
+    sil::Image newImageMirroredMosaic{5*image.width(), 5*image.height()};
+    
+    for (int colnewImageMosaic{0}; colnewImageMosaic < 5*image.height(); colnewImageMosaic += image.height())
+    {
+        for (int rownewImageMosaic{0}; rownewImageMosaic < 5*image.width(); rownewImageMosaic += image.width())
+        {
+            for (int i{0}; i < image.height()*image.width(); i+=image.width())
+            {
+                std::reverse(image.pixels().begin() + i, image.pixels().begin() + i + image.width()); 
+            }
+        }
+    }
+    newImageMirroredMosaic.save("output/15_mosaiqueMiroir.png");
+}
+
 void glitch(sil::Image image) 
 {
     int glitchLvl = random_int(20, 100);
@@ -261,11 +277,11 @@ void glitch(sil::Image image)
         int widthRectangle = random_int(10, 40);
         int heightRectangle = random_int(1, 10);
 
-        for (int x{0}; x < widthRectangle; x++)
+        for (int w{0}; w < widthRectangle; w++)
         {
-            for (int y{0}; y < heightRectangle; y++)
+            for (int h{0}; h < heightRectangle; h++)
             {
-                std::swap(image.pixel(x, y), image.pixel(startingPointX + x, startingPointY + y));
+                std::swap(image.pixel(w + newPointX, h + newPointY), image.pixel(startingPointX + w, startingPointY + h));
             }
         }
     }
@@ -296,8 +312,7 @@ int main()
     disque(image_noire);
     cercle(image_noire);
     mosaique(logo);
-    
-    std::swap(image.pixel(x, y), image.pixel(startingPointX + x, startingPointY + y));*/
+    glitch(logo);*/
 
-    glitch(logo);
+    mosaiqueMiroir(logo);
 }
