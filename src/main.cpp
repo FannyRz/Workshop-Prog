@@ -326,6 +326,27 @@ void vortex(sil::Image image, sil::Image result2)
         }
     }
     result2.save("output/18_vortex.png");
+} 
+    
+void tramage(sil::Image image)
+{
+    noirEtBlanc(image);
+    
+    for (glm::vec3 & color : image.pixels())
+    {
+        if (color.r <= .5)
+        {
+            color.r = 0;
+            color.g = 0;
+            color.b = 0;
+        } else 
+        {
+            color.r = 1;
+            color.g = 1;
+            color.b = 1;
+        }
+    }
+    image.save("output/19_tramage.png");
 }
 
 void convolutions (sil::Image image, sil::Image result)
@@ -401,8 +422,9 @@ int main()
     // glitch(logo);
 
     // vortex(logo,result2);
+    tramage(photo);
     
-    // convolutions(logo, result1 );
+    convolutions(logo, result1 );
 
     //convolutions(logo, result1 );
 }
