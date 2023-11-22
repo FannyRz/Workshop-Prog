@@ -25,7 +25,6 @@ void echangeRougeBleu(sil::Image image)
     {
         std::swap(color.r, color.b);
     }
-
     image.save("output/02_echangeRougeBleu.png");
 }
 
@@ -38,7 +37,6 @@ void noirEtBlanc(sil::Image image)
         color.g = moy;
         color.b = moy;
     }
-
     image.save("output/03_noirEtBlanc.png");
 }
 
@@ -50,7 +48,6 @@ void negatif(sil::Image image)
         color.g = 1 - color.g;
         color.b = 1 - color.b;
     }
-
     image.save("output/04_negatif.png");
 }
 
@@ -60,20 +57,16 @@ void degrade(sil::Image image)
     {
         for (int x{0}; x < image.width(); x++)
         {
-
             image.pixel(x, y).r += x / (image.width() - 1.0);
             image.pixel(x, y).g += x / (image.width() - 1.0);
             image.pixel(x, y).b += x / (image.width() - 1.0);
 
-            /*
-            Autre façon de faire, en utilisant la valeur précédente en incrémentant :
+            /* Autre façon de faire, en utilisant la valeur précédente en incrémentant :
             image.pixel(x, y).r += image.pixel(x-1, 0).r + 1.f/(image.width() -1);
             Attention : faire démarrer x à 1 et conv la division en float
-            y = 0 car on s'en fiche de la ligne ici
-            */
+            y = 0 car on s'en fiche de la ligne ici */
         }
     }
-
     image.save("output/05_degrade.png");
 }
 
@@ -206,8 +199,7 @@ void disque(sil::Image image){
     image.save("output/11_disque.png");
 }
 
-void cercle (sil::Image & image, int abcisse, int ordonnee, int thickness){  //coordonnee du centre du cerclee 
-
+void cercle (sil::Image & image, int abcisse, int ordonnee, int thickness) {  //coordonnee du centre du cerclee 
     // On passe sur tous les x et tous les y, et on accède au pixel correspondant :
     for (int x{0}; x < image.width(); x++)//300
     {
@@ -224,8 +216,8 @@ void cercle (sil::Image & image, int abcisse, int ordonnee, int thickness){  //c
 }
 
 void rosace (sil::Image & image,int thickness){  
-
     cercle(image,image.width()/2, image.height()/2,thickness);
+
     for(int i {0}; i<6 ; i++){
         cercle(image,image.width()/2 + 100*cos(i*((2*pi)/6)), image.height()/2 + 100*sin(i*((2*pi)/6)) ,thickness);
     }
@@ -305,7 +297,8 @@ glm::vec2 rotated(glm::vec2 v, float angle) // glm::vec2 correspond a la positio
     //retourne une nouvelle position du pixel
 } 
     
-void vortex(sil::Image image, sil::Image result2){
+void vortex(sil::Image image, sil::Image result2)
+{
     for (int x{0}; x < image.width(); x++)
     {
         for (int y{0}; y < image.height(); y++)
@@ -321,11 +314,12 @@ void vortex(sil::Image image, sil::Image result2){
     result2.save("output/18_vortex.png");
 }
 
-void convolutions (sil::Image image, sil::Image result){
-
+void convolutions (sil::Image image, sil::Image result)
+{
     int kernel {};
     std::cout << "Entrez la dimension de votre kernel (nombre impair) : " ;
     std::cin >> kernel;
+    
     for (int x{1}; x < image.width()-1; x++)//300
     {
         for (int y{1}; y < image.height()-1; y++)//345
@@ -355,7 +349,6 @@ void convolutions (sil::Image image, sil::Image result){
 
 int main()
 {
-
     sil::Image logo{"images/logo.png"};
     sil::Image photo{"images/photo.jpg"};
     sil::Image lowContrast{"images/photo_faible_contraste.jpg"};
@@ -375,23 +368,25 @@ int main()
     // bruit(logo);
     // rotation90(logo);
     // RGBSplit(logo, result2);
-    // Luminosite(photo);
+    // luminosite(photo);
     // disque(image_noire);
-
-    // mosaique(logo);  
-    mosaiqueMiroir(logo);  
-    // std::swap(image.pixel(x, y), image.pixel(startingPointX + x, startingPointY + y));
-    // glitch(logo);
-
+    
     // float thickness {};
     // std::cout << "Entrez l'epaisseur du cercle que vous souhaitez :" ;
     // std::cin >> thickness;
-    // cercle(image_noire,255,255,thickness);
+    // cercle(image_noire, 255, 255,thickness);
 
     // {
     //     sil::Image image_noire{500, 500};
     //     rosace(image_noire,thickness);
     // }
+
+    // mosaique(logo);  
+    mosaiqueMiroir(logo);
+
+    // glitch(logo);
+
     //vortex(logo,result2);
+
     //convolutions(logo, result1 );
 }
