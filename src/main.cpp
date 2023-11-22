@@ -252,8 +252,6 @@ void mosaiqueMiroir(sil::Image image)
     {
         for (int rownewImageMosaic{0}; rownewImageMosaic < 5*image.width(); rownewImageMosaic += image.width())
         {
-            /*int isMirrored {(a > b) ? 0 : 1 };*/
-
             for (int x{0}; x < image.width(); x++)
             {
                 for (int y{0}; y < image.height(); y++)
@@ -261,6 +259,7 @@ void mosaiqueMiroir(sil::Image image)
                     newImageMirroredMosaic.pixel(x + rownewImageMosaic, y + colnewImageMosaic) = image.pixel(x, y);
                 }
             }
+
         }
     }
     newImageMirroredMosaic.save("output/15_mosaiqueMiroir.png");
