@@ -248,7 +248,7 @@ void mosaiqueMiroir(sil::Image image)
 {
     sil::Image newImageMirroredMosaic{5*image.width(), 5*image.height()};
     
-    for (int colnewImageMosaic{0}; colnewImageMosaic < 5*image.height(); colnewImageMosaic += image.height())
+    /*création de l'image en mosaique (pt de départ)*/ for (int colnewImageMosaic{0}; colnewImageMosaic < 5*image.height(); colnewImageMosaic += image.height())
     {
         for (int rownewImageMosaic{0}; rownewImageMosaic < 5*image.width(); rownewImageMosaic += image.width())
         {
@@ -259,9 +259,23 @@ void mosaiqueMiroir(sil::Image image)
                     newImageMirroredMosaic.pixel(x + rownewImageMosaic, y + colnewImageMosaic) = image.pixel(x, y);
                 }
             }
-
         }
+    } 
+
+    /*reverse 1 col. / 2*/ for (int colnewImageMosaic2 {0}; colnewImageMosaic2 < newImageMirroredMosaic.width(); colnewImageMosaic2 += image.height())
+    {
+        
+        std::reverse(image.pixels().begin() + colnewImageMosaic2, image.pixels().begin() + colnewImageMosaic2 + image.width());
     }
+
+    /*        
+        if (j%2 == 1) {
+                        y_direction = image.height()-y-1;
+                    } else {
+                        y_direction = y;
+                    }
+    */
+
     newImageMirroredMosaic.save("output/15_mosaiqueMiroir.png");
 }
 
@@ -290,10 +304,11 @@ void glitch(sil::Image image)
     image.save("output/16_glitch.png");
 }
 
-glm::vec2 rotated(glm::vec2 point, glm::vec2 center_of_rotation, float angle)
+glm::vec2 rotated(glm::vec2 v, float angle) // glm::vec2 correspond a la position d'un pixel
 {
-    return glm::vec2{glm::rotate(glm::mat3{1.f}, angle) * glm::vec3{point - center_of_rotation, 0.f}} + center_of_rotation;
-}
+    return glm::vec2{glm::rotate(glm::mat3{1.f}, angle) * glm::vec3{v, 1.f}};
+    //retourne une nouvelle position du pixel
+} 
     
 void vortex(sil::Image image, sil::Image result2)
 {
@@ -301,11 +316,12 @@ void vortex(sil::Image image, sil::Image result2)
     {
         for (int y{0}; y < image.height(); y++)
         {   
-            double distance {sqrt((x-image.width()/2)*(x-image.width()/2)+(y-image.height()/2)*(y-image.height()/2))};
-            glm::vec2 nouvelle_position {rotated({x,y},{image.width()/2, image.height()/2},distance/10)}; 
-            if(nouvelle_position.x>=0 && nouvelle_position.x<image.width() && nouvelle_position.y<image.height() &&nouvelle_position.y>=0){
-                result2.pixel(x,y) = image.pixel(nouvelle_position.x, nouvelle_position.y);
-            }
+            if(sqrt((x-image.width()/2)*(x-image.width()/2)+(y-image.height()/2)*(y-image.height()/2))<=image.height()/2-x && sqrt((x-image.width()/2)*(x-image.width()/2)+(y-image.height()/2)*(y-image.height()/2))>=image.height()/2-x){  
+                glm::vec2 nouvelle_position {rotated({x,y},x+10.f)}; 
+                if((nouvelle_position.x>=0 && nouvelle_position.x<image.width()) && (nouvelle_position.y>=0 && nouvelle_position.y<image.height())){
+                    result2.pixel(x,y) = image.pixel(nouvelle_position.x, nouvelle_position.y);
+                }
+            } 
         }
     }
     result2.save("output/18_vortex.png");
@@ -379,10 +395,11 @@ int main()
     // }
 
     // mosaique(logo);  
-    // mosaiqueMiroir(logo);
+    mosaiqueMiroir(logo);
 
     // glitch(logo);
-    // vortex(logo,result2);
-    // convolutions(logo, result1 );
 
+    //vortex(logo,result2);
+
+    //convolutions(logo, result1 );
 }
