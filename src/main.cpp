@@ -38,7 +38,6 @@ void blackAndWhite(sil::Image & image)
         color.g = moy;
         color.b = moy;
     }
-    image.save("output/03_blackAndWhite.png");
 }
 
 void negative(sil::Image image) 
@@ -510,12 +509,12 @@ void filtresSeparables (std::vector<std::vector<float>> kernel, int tailleKernel
     }
     matriceLigne.push_back(tmp);  
 
-    sil::Image result2{300, 345};
+    sil::Image result2{image.width(), image.height()};
     algoGeneriqueDeConvolution(matriceColonne,tailleKernel,1,image,result2);
     algoGeneriqueDeConvolution(matriceLigne,1,tailleKernel,result2,result);
 }
 
-void differenceDeGaussiennes (std::vector<std::vector<float>> kernel1, int longueurKernel1, sil::Image image, sil::Image & result){
+void differenceDeGaussiennes (std::vector<std::vector<float>> kernel1, int longueurKernel1, float tau, sil::Image image, sil::Image & result){
     sil::Image result1{500, 500};
     sil::Image result2{500, 500};
 
@@ -531,31 +530,33 @@ void differenceDeGaussiennes (std::vector<std::vector<float>> kernel1, int longu
     }
     
     filtresSeparables(kernel1,longueurKernel1,image,result1);
-    // filtresSeparables(kernel2,longueurKernel2,image,result2);
-    // for (int x{0}; x < image.width(); x++)
-    // {
-    //     for (int y{0}; y < image.height(); y++)
-    //     { 
-    //         result.pixel(x,y) = result1.pixel(x,y) - result2.pixel(x,y);
-    //     }
-    // }
-    // blackAndWhite(result);
-    // for (int x{0}; x < image.width(); x++)
-    // {
-    //     for (int y{0}; y < image.height(); y++)
-    //     { 
-    //         if(result.pixel(x,y).r >=0.2f){
-    //             result.pixel(x,y).r = 0.f;
-    //             result.pixel(x,y).b = 0.f;
-    //             result.pixel(x,y).g = 0.f;
-    //         }else{
-    //             result.pixel(x,y).r = 1.f;
-    //             result.pixel(x,y).b = 1.f;
-    //             result.pixel(x,y).g = 1.f;
-    //         }
-    //     }
-    // }
-    // result.save("output/24_differenceDeGaussienne.png");
+    filtresSeparables(kernel2,longueurKernel2,image,result2);
+    for (int x{0}; x < image.width(); x++)
+    {
+        for (int y{0}; y < image.height(); y++)
+        { 
+            result.pixel(x,y).r = (1.f+tau)*result1.pixel(x,y).r - tau*result2.pixel(x,y).r;
+            result.pixel(x,y).g = (1.f+tau)*result1.pixel(x,y).g - tau*result2.pixel(x,y).g;
+            result.pixel(x,y).b = (1.f+tau)*result1.pixel(x,y).b - tau*result2.pixel(x,y).b;
+        }
+    }
+    blackAndWhite(result);
+    for (int x{0}; x < image.width(); x++)
+    {
+        for (int y{0}; y < image.height(); y++)
+        { 
+            if(result.pixel(x,y).r >=0.2f){
+                result.pixel(x,y).r = 1.f;
+                result.pixel(x,y).b = 1.f;
+                result.pixel(x,y).g = 1.f;
+            }else{
+                result.pixel(x,y).r = 0.f;
+                result.pixel(x,y).b = 0.f;
+                result.pixel(x,y).g = 0.f;
+            }
+        }
+    }
+    result.save("output/24_differenceDeGaussienne.png");
 }
 
 int main()
@@ -573,6 +574,7 @@ int main()
     // { /*noirEtBlanc*/
     //     sil::Image logo{"images/logo.png"};
     //     blackAndWhite(logo);
+    //     logo.save("output/03_blackAndWhite.png");
     // }
     // negative(logo);
     // gradient(blackRectangle);
@@ -623,35 +625,10 @@ int main()
     //     algoGeneriqueDeConvolution(kernel,2,3,logo,blackImageLogo);
     //     blackImageLogo.save("output/22_algoGeneriqueDeConvolution.png");
     //    }
-       {
-        /*FiltresSeparables*/
-        sil::Image logo{"images/logo.png"};
-        sil::Image blackImageLogo{300, 345};
-
-        //creation du kernel
-        std::vector<std::vector<float>> kernel {};
-        int longueurKernel {};
-        std::cout << "Entrez la longueur du kartel que vous souhaitez (nombre impair): " ;
-        std::cin >> longueurKernel; 
-
-        while(longueurKernel%2==0){
-        std::cout << "Probleme, vous avez entrez un nombre pair. Veuillez recommencer. " << std::endl;
-        std::cout << "Entrez la dimension de votre kernel (nombre impair) : " ;
-        std::cin >> longueurKernel;
-        }
-         
-        std::vector<float> tmp {}; 
-        for(int i{1} ; i<= longueurKernel ; i++){
-           for(int j{1} ; j<= longueurKernel ; j++){
-               tmp.push_back({1.f/(static_cast<float>(longueurKernel)*static_cast<float>(longueurKernel))});
-           }
-           kernel.push_back(tmp); 
-        }
-        filtresSeparables(kernel,longueurKernel,logo, blackImageLogo);
-        blackImageLogo.save("output/23_filtresSeparables.png");
-       }
     //    {
-    //     /*DifferenceDeGaussienne*/
+    //     /*FiltresSeparables*/
+    //     sil::Image logo{"images/logo.png"};
+    //     sil::Image blackImageLogo{300, 345};
     //     sil::Image photo{"images/photo.jpg"};
     //     sil::Image blackImagePhoto{500, 500};
 
@@ -674,8 +651,31 @@ int main()
     //        }
     //        kernel.push_back(tmp); 
     //     }
+    //     filtresSeparables(kernel,longueurKernel,logo, blackImageLogo);
+    //     blackImageLogo.save("output/23_filtresSeparables.png");
+    //    }
+    //    {
+    //     /*DifferenceDeGaussienne*/
+    //     sil::Image photo{"images/photo.jpg"};
+    //     sil::Image blackImagePhoto{500, 500};
 
-    //     differenceDeGaussiennes(kernel, longueurKernel,photo, blackImagePhoto);
+    //     //creation du kernel
+    //     std::vector<std::vector<float>> kernel {};
+    //     int longueurKernel {3};
+         
+    //     std::vector<float> tmp {}; 
+    //     for(int i{1} ; i<= longueurKernel ; i++){
+    //        for(int j{1} ; j<= longueurKernel ; j++){
+    //            tmp.push_back({1.f/(static_cast<float>(longueurKernel)*static_cast<float>(longueurKernel))});
+    //        }
+    //        kernel.push_back(tmp); 
+    //     }
+
+    //     int tau {};
+    //     std::cout << "Veuillez indiquer le tau que vous souhaitez pour votre difference de Gaussienne : ";
+    //     std::cin >> tau;
+
+    //     differenceDeGaussiennes(kernel, longueurKernel, tau, photo, blackImagePhoto);
     //    }
     // }
 }
