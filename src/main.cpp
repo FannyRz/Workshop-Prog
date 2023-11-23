@@ -10,26 +10,26 @@
 
 float pi {M_PI};
     
-void seulementLeVert(sil::Image image) 
+void onlyGreen(sil::Image image) 
 {
     for (glm::vec3 & color : image.pixels()) 
     {
         color.r = 0.f /*mets la composante rouge à 0. 1 couleur = glm::vec3 */ ;
         color.b = 0.f;
     }
-    image.save("output/01_seulementLeVert.png");
+    image.save("output/01_onlyGreen.png");
 }
 
-void echangeRougeBleu(sil::Image image) 
+void changeRedBlue(sil::Image image) 
 {
     for (glm::vec3 & color : image.pixels()) 
     {
         std::swap(color.r, color.b);
     }
-    image.save("output/02_echangeRougeBleu.png");
+    image.save("output/02_changeRedBlue.png");
 }
 
-void noirEtBlanc(sil::Image & image) 
+void blackAndWhite(sil::Image & image) 
 {
     for (glm::vec3 & color : image.pixels()) 
     {
@@ -38,10 +38,10 @@ void noirEtBlanc(sil::Image & image)
         color.g = moy;
         color.b = moy;
     }
-    image.save("output/03_noirEtBlanc.png");
+    image.save("output/03_blackAndWhite.png");
 }
 
-void negatif(sil::Image image) 
+void negative(sil::Image image) 
 {
     for (glm::vec3 & color : image.pixels()) 
     {
@@ -49,10 +49,10 @@ void negatif(sil::Image image)
         color.g = 1 - color.g;
         color.b = 1 - color.b;
     }
-    image.save("output/04_negatif.png");
+    image.save("output/04_negative.png");
 }
 
-void degrade(sil::Image image) 
+void gradient(sil::Image image) 
 {
     for (int y{0}; y < image.height(); y++)
     {
@@ -66,19 +66,19 @@ void degrade(sil::Image image)
             y = 0 car on s'en fiche de la ligne ici */
         }
     }
-    image.save("output/05_degrade.png");
+    image.save("output/05_gradient.png");
 }
 
-void miroirReverse(sil::Image image) 
+void mirror1(sil::Image image) 
 {
     for (int i{0}; i < image.height()*image.width(); i+=image.width())
     {
         std::reverse(image.pixels().begin() + i, image.pixels().begin() + i + image.width()); 
     }
-    image.save("output/06_miroirReverse.png");
+    image.save("output/06_mirror1.png");
 }
 
-void miroir2(sil::Image image) /*2e version*/
+void mirror2(sil::Image image) /*2e version*/
 {
     for (float x{0}; x < image.width()/2.f; x++)
     {
@@ -96,10 +96,10 @@ void miroir2(sil::Image image) /*2e version*/
             image.pixel(image.width()-(x+1),y).b = tmp_b;
         }
     }
-    image.save("output/06_miroir2.png");
+    image.save("output/06_mirror2.png");
 }
 
-void bruit(sil::Image image) 
+void noise(sil::Image image) 
 {
     int noiseLvl = random_int(1, 5000);
     
@@ -112,7 +112,7 @@ void bruit(sil::Image image)
         image.pixel(x, y).g = random_float(0, 1);
         image.pixel(x, y).b = random_float(0, 1);
     }
-    image.save("output/07_bruit.png");
+    image.save("output/07_noise.png");
 }
 
 void rotation90(sil::Image image) 
@@ -153,7 +153,7 @@ void RGBSplit(sil::Image image, sil::Image result)
     result.save("output/09_RGBSplit.png");
 }
 
-void luminosite(sil::Image image) 
+void brightness(sil::Image image) 
 {
     int answer{0};
     std::cout << "lighten (1) or darken (0) ?" << std::endl;
@@ -179,10 +179,10 @@ void luminosite(sil::Image image)
         }
         break;
     }
-    image.save("output/10_Luminosity.png");
+    image.save("output/10_brightness.png");
 }
 
-void disque(sil::Image image){
+void disk(sil::Image image){
     // On passe sur tous les x et tous les y, et on accède au pixel correspondant :
     for (int x{0}; x < image.width(); x++)
     {
@@ -195,10 +195,10 @@ void disque(sil::Image image){
             }           
         }
     }
-    image.save("output/11_disque.png");
+    image.save("output/11_disk.png");
 }
 
-void cercle (sil::Image & image, int abcisse, int ordonnee, int thickness) {  //coordonnee du centre du cerclee 
+void circle (sil::Image & image, int abcisse, int ordonnee, int thickness) {  //coordonnee du centre du cerclee 
     // On passe sur tous les x et tous les y, et on accède au pixel correspondant :
     for (int x{0}; x < image.width(); x++)//300
     {
@@ -211,19 +211,18 @@ void cercle (sil::Image & image, int abcisse, int ordonnee, int thickness) {  //
             }
         }
     }
-    image.save("output/12_cercle.png");
 }
 
 void rosace (sil::Image & image,int thickness){  
-    cercle(image,image.width()/2, image.height()/2,thickness);
+    circle(image,image.width()/2, image.height()/2,thickness);
 
     for(int i {0}; i<6 ; i++){
-        cercle(image,image.width()/2 + 100*cos(i*((2*pi)/6)), image.height()/2 + 100*sin(i*((2*pi)/6)) ,thickness);
+        circle(image,image.width()/2 + 100*cos(i*((2*pi)/6)), image.height()/2 + 100*sin(i*((2*pi)/6)) ,thickness);
     }
     image.save("output/13_rosace.png");
 }
 
-void mosaique(sil::Image image) 
+void mosaic(sil::Image image) 
 {
     sil::Image mosaicCanvas{5*image.width(), 5*image.height()};
     
@@ -240,10 +239,10 @@ void mosaique(sil::Image image)
             }
         }
     }
-    mosaicCanvas.save("output/14_mosaique.png");
+    mosaicCanvas.save("output/14_mosaic.png");
 }
 
-void mosaiqueMiroir(sil::Image image) 
+void mirrorMosaic(sil::Image image) 
 {
     sil::Image mirroredMosaicCanvas{5*image.width(), 5*image.height()};
 
@@ -273,7 +272,7 @@ void mosaiqueMiroir(sil::Image image)
             }
         }
     }
-    mirroredMosaicCanvas.save("output/15_mosaiqueMiroir.png");
+    mirroredMosaicCanvas.save("output/15_mirrorMosaic.png");
 }
 
 void glitch(sil::Image image) 
@@ -301,27 +300,27 @@ void glitch(sil::Image image)
     image.save("output/16_glitch.png");
 }
 
-void fractale(sil::Image image){
+void fractal(sil::Image image){
     for (float x{-(static_cast<float>(image.width())/200.f)}; x <= (static_cast<float>(image.width())/200.f); x= x+0.01f)
     {
         for (float y{-(static_cast<float>(image.height())/200.f)}; y <= (static_cast<float>(image.height())/200.f); y= y+0.01f)
         {
             std::complex<float>  c{x, y};
             std::complex<float> z{0.f, 0.f}; // Définis le nombre z = 0 + 0*i
-            float compteur {0.f};
+            float counter {0.f};
             for (int i{0}; i<50; i++){
                 z = z*z+c;
-                compteur += 1.f;
+                counter += 1.f;
                 if(std::abs(z) > 2){  
                     break;
                 }
             }
-            image.pixel(x*100.f+(static_cast<float>(image.width())/2.f),y*100.f+(static_cast<float>(image.height())/2.f)).r = compteur/50.f;
-            image.pixel(x*100.f+(static_cast<float>(image.width())/2.f),y*100.f+(static_cast<float>(image.height())/2.f)).b = compteur/50.f;
-            image.pixel(x*100.f+(static_cast<float>(image.width())/2.f),y*100.f+(static_cast<float>(image.height())/2.f)).g = compteur/50.f; 
+            image.pixel(x*100.f+(static_cast<float>(image.width())/2.f),y*100.f+(static_cast<float>(image.height())/2.f)).r = counter/50.f;
+            image.pixel(x*100.f+(static_cast<float>(image.width())/2.f),y*100.f+(static_cast<float>(image.height())/2.f)).b = counter/50.f;
+            image.pixel(x*100.f+(static_cast<float>(image.width())/2.f),y*100.f+(static_cast<float>(image.height())/2.f)).g = counter/50.f; 
         }     
     }
-    image.save("output/17_fractale.png");
+    image.save("output/17_fractal.png");
 }
 
 glm::vec2 rotated(glm::vec2 point, glm::vec2 center_of_rotation, float angle)
@@ -336,9 +335,9 @@ void vortex(sil::Image image, sil::Image result)
         for (int y{0}; y < image.height(); y++)
         {   
             double distance {sqrt((x-image.width()/2)*(x-image.width()/2)+(y-image.height()/2)*(y-image.height()/2))};
-            glm::vec2 nouvelle_position {rotated({x,y},{image.width()/2, image.height()/2},distance/10)}; 
-            if(nouvelle_position.x>=0 && nouvelle_position.x<image.width() && nouvelle_position.y<image.height() &&nouvelle_position.y>=0){
-                result.pixel(x,y) = image.pixel(nouvelle_position.x, nouvelle_position.y);
+            glm::vec2 newPosition {rotated({x,y},{image.width()/2, image.height()/2},distance/10)}; 
+            if(newPosition.x>=0 && newPosition.x<image.width() && newPosition.y<image.height() &&newPosition.y>=0){
+                result.pixel(x,y) = image.pixel(newPosition.x, newPosition.y);
             }
         }
     }
@@ -378,7 +377,7 @@ void tramage(sil::Image image)
 void normalisation(sil::Image image)
 {
     sil::Image grayscaledCopy = image;
-    noirEtBlanc(grayscaledCopy);
+    blackAndWhite(grayscaledCopy);
 
     float darkestPixelValue{1.f};
     float brightestPixelValue{0.f};
@@ -449,7 +448,7 @@ void convolutions (sil::Image image, sil::Image result)
     result.save("output/21_convolutions.png");
 }
 
-void algoGeneriqueDeConvolution(std::vector<std::vector<float>> kernel, int ligneKernel, int colonneKernel, sil::Image image, sil::Image & result)
+void algoGeneriqueDeConvolution(std::vector<std::vector<float>> kernel, int ligneKernel, int colonneKernel, sil::Image & image, sil::Image & result)
 {
     float total {0.f}; 
     for(int i{0} ; i<ligneKernel ; i++){
@@ -536,7 +535,7 @@ void differenceDeGaussiennes (std::vector<std::vector<float>> kernel1, int longu
     //         result.pixel(x,y) = result1.pixel(x,y) - result2.pixel(x,y);
     //     }
     // }
-    // noirEtBlanc(result);
+    // blackAndWhite(result);
     // for (int x{0}; x < image.width(); x++)
     // {
     //     for (int y{0}; y < image.height(); y++)
@@ -562,62 +561,68 @@ int main()
     sil::Image lowContrast{"images/photo_faible_contraste.jpg"};
 
     sil::Image blackRectangle{300, 200};
-    sil::Image image_noire{500, 500};  
-    sil::Image result{300, 345};
+    sil::Image blackImagePhoto{500, 500};  //meme format que la photo
+    sil::Image blackImageLogo{300, 345};      //meme format que le logo
 
-    // seulementLeVert(logo);
-    // echangeRougeBleu(logo);
+    // onlyGreen(logo);
+    // changeRedBlue(logo);
     // { /*noirEtBlanc*/
-        // sil::Image logo{"images/logo.png"};
-        // noirEtBlanc(logo);
-        // }
-    // negatif(logo);
-    // degrade(blackRectangle);
-    // miroirReverse(logo); 
-    // miroir2(logo);
-    // bruit(logo);
+    //     sil::Image logo{"images/logo.png"};
+    //     blackAndWhite(logo);
+    // }
+    // negative(logo);
+    // gradient(blackRectangle);
+    // mirror1(logo); 
+    // mirror2(logo);
+    // noise(logo);
     // rotation90(logo);
-    // RGBSplit(logo, result);
-    // luminosite(photo);
-    // disque(image_noire);
+    // RGBSplit(logo, blackImageLogo);
+    // brightness(photo);
+    // disk(blackImagePhoto);
 
-    // { /*CERCLE*/
+    // { /*CIRCLE*/
     //     float thickness {};
     //     std::cout << "Entrez l'epaisseur du cercle que vous souhaitez :" ;
     //     std::cin >> thickness;
-    //     cercle(image_noire, 255, 255,thickness);
+    //     circle(blackImagePhoto, 255, 255,thickness);
+    //     blackImagePhoto.save("output/12_circle.png");
     // }
     // { /*ROSACE*/
     //     float thickness {};
     //     std::cout << "Entrez l'epaisseur pour les cercles que vous souhaitez :" ;
     //     std::cin >> thickness;
-    //     sil::Image image_noire{500, 500};
-    //     rosace(image_noire,thickness);
+    //     sil::Image blackImagePhoto{500, 500};
+    //     rosace(blackImagePhoto,thickness);
     // }
 
-    // mosaique(logo);  
-    // mosaiqueMiroir(logo);
-    { /*Fractale*/
-        fractale(image_noire);
-    }
-
+    // mosaic(logo);  
+    // mirrorMosaic(logo);
     // glitch(logo);
-    // vortex(logo,result);
+    // { /*Fractal*/
+    //     fractal(blackImagePhoto);
+    // }
+    // vortex(logo,blackImageLogo);
     // tramage(photo);
-    normalisation(lowContrast);
-    noirEtBlanc(logo); /*cet appel remet à jour 03_noirEtBlanc*/ 
+    // normalisation(lowContrast);
+    // blackAndWhite(logo); /*cet appel remet à jour 03_noirEtBlanc*/ 
     // { 
-    //    /*CONVOLUTION*/
-    //     std::vector<std::vector<float>> kernel {{1.f/9.f,1.f/9.f,1.f/9.f},{1.f/9.f,1.f/9.f,1.f/9.f},{1.f/9.f,1.f/9.f,1.f/9.f}};
-    //     convolutions(logo, result);
-    //    /*AlgoGeneriqueDeConvolution*/
-    //     std::vector<std::vector<float>> kernel {{-1,-1,-1},{-1,-1,-1},{-1,-1,-1}};
-    //     algoGeneriqueDeConvolution(kernel,3,3,logo,result);
-    //     result.save("output/22_algoGeneriqueDeConvolution.png");
-    //   /*FiltresSeparables*/
     //    {
+    //     /*CONVOLUTION*/
+    //     std::vector<std::vector<float>> kernel {{1.f/9.f,1.f/9.f,1.f/9.f},{1.f/9.f,1.f/9.f,1.f/9.f},{1.f/9.f,1.f/9.f,1.f/9.f}};
+    //     convolutions(logo, blackImageLogo);
+    //    }
+    //    {
+    //     /*AlgoGeneriqueDeConvolution*/
     //     sil::Image logo{"images/logo.png"};
-    //     sil::Image result{300, 345};
+    //     sil::Image blackImageLogo{300, 345};
+    //     std::vector<std::vector<float>> kernel {{-1,-1,-1},{-1,-1,-1},{-1,-1,-1}};
+    //     algoGeneriqueDeConvolution(kernel,3,3,logo,blackImageLogo);
+    //     blackImagePhoto.save("output/22_algoGeneriqueDeConvolution.png");
+    //    }
+    //    {
+    //     /*FiltresSeparables*/
+    //     sil::Image logo{"images/logo.png"};
+    //     sil::Image blackImagePhoto{300, 345};
 
     //     //creation du kernel
     //     std::vector<std::vector<float>> kernel {};
@@ -639,13 +644,13 @@ int main()
     //        kernel.push_back(tmp); 
     //     }
 
-    //    filtresSeparables(kernel,longueur_kernel,logo, result);
-       
-    //   /*DifferenceDeGaussienne*/
-    //     sil::Image photo{"images/photo.jpg"};
-    //     sil::Image resultPhoto{500, 500};
-    //     differenceDeGaussiennes(kernel, longueur_kernel,photo, resultPhoto);
+    //    filtresSeparables(kernel,longueur_kernel,logo, blackImagePhoto);
     //    }
-    //
-    // // }
+    //    {       
+    //     /*DifferenceDeGaussienne*/
+    //     sil::Image photo{"images/photo.jpg"};
+    //     sil::Image blackImagePhoto{500, 500};
+    //     // differenceDeGaussiennes(kernel, longueur_kernel,photo, blackImagePhoto);
+    //    }
+    // }
 }
