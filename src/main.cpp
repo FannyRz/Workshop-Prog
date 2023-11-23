@@ -226,22 +226,22 @@ void rosace (sil::Image & image,int thickness){
 
 void mosaique(sil::Image image) 
 {
-    sil::Image newImageMosaic{5*image.width(), 5*image.height()};
+    sil::Image canvasMosaic{5*image.width(), 5*image.height()};
     
-    for (int colnewImageMosaic{0}; colnewImageMosaic < 5*image.height(); colnewImageMosaic += image.height())
+    for (int canvasCol{0}; canvasCol < 5*image.height(); canvasCol += image.height())
     {
-        for (int rownewImageMosaic{0}; rownewImageMosaic < 5*image.width(); rownewImageMosaic += image.width())
+        for (int canvasRow{0}; canvasRow < 5*image.width(); canvasRow += image.width())
         {
-            for (int x{0}; x < image.width(); x++)
+            for (int entryImageX{0}; entryImageX < image.width(); entryImageX++)
             {
-                for (int y{0}; y < image.height(); y++)
+                for (int yImageEntry{0}; yImageEntry < image.height(); yImageEntry++)
                 {
-                    newImageMosaic.pixel(x + rownewImageMosaic, y + colnewImageMosaic) = image.pixel(x, y);
+                    canvasMosaic.pixel(entryImageX + canvasRow, yImageEntry + canvasCol) = image.pixel(entryImageX, yImageEntry);
                 }
             }
         }
     }
-    newImageMosaic.save("output/14_mosaique.png");
+    canvasMosaic.save("output/14_mosaique.png");
 }
 
 void mosaiqueMiroir(sil::Image image) 
@@ -250,29 +250,25 @@ void mosaiqueMiroir(sil::Image image)
     int startingPointx{};
     int startingPointy{};
 
-    for (int canvasRow{0}; canvasRow < 5; canvasRow++) 
+    for (int mirroredCanvasRow{0}; mirroredCanvasRow < 5; mirroredCanvasRow++) 
     {
-        for (int j=0; j<5; j++) 
+        for (int mirroredCanvasCol=0; mirroredCanvasCol<5; mirroredCanvasCol++) 
         {
             for (int xEntryImage{0}; xEntryImage < image.width(); xEntryImage++)
             {
                 for (int yEntryImage{0}; yEntryImage < image.height(); yEntryImage++)
                 {
-                    // Choix d'une symétrie verticale ou non
-                    if (canvasRow%2 == 1) {
+                    if (mirroredCanvasRow%2 == 1) {
                         startingPointx = image.width()-xEntryImage-1;
                     } else {
                         startingPointx = xEntryImage;
                     }
-                    // Choix d'une symétrie horizontale ou non
-                    if (j%2 == 1) {
+                    if (mirroredCanvasCol%2 == 1) {
                         startingPointy = image.height()-yEntryImage-1;
                     } else {
                         startingPointy = yEntryImage;
                     }
-
-                    // Affichage de l'image
-                    canvasMirroredMosaic.pixel(canvasRow*image.width()+xEntryImage, j*image.height()+yEntryImage) = image.pixel(startingPointx, startingPointy);
+                    canvasMirroredMosaic.pixel(mirroredCanvasRow*image.width()+xEntryImage, mirroredCanvasCol*image.height()+yEntryImage) = image.pixel(startingPointx, startingPointy);
                 }
             }
         }
@@ -330,24 +326,100 @@ void vortex(sil::Image image, sil::Image result2)
     
 void tramage(sil::Image image)
 {
+    const int bayer_n = 4;
+    float bayer_matrix_4x4[][bayer_n] = 
+    {
+        {    -0.5,       0,  -0.375,   0.125 },
+        {    0.25,   -0.25,   0.375, - 0.125 },
+        { -0.3125,  0.1875, -0.4375,  0.0625 },
+        {  0.4375, -0.0625,  0.3125, -0.1875 },
+    };
+
     noirEtBlanc(image);
     
-    for (glm::vec3 & color : image.pixels())
+    for (int x{0}; x < image.width(); x++)
     {
-        color.r+=random_float(0, 1) - .5;
-        if (color.r > .5 )
+        for (int y{0}; y < image.height(); y++)
         {
-            color.r = 0;
-            color.g = 0;
-            color.b = 0;
-        } else 
-        {
-            color.r = 1;
-            color.g = 1;
-            color.b = 1;
+            if (image.pixel(x, y).r > 1 - bayer_matrix_4x4[x % 4][y % 4])
+            {
+                image.pixel(x, y).r = 1;
+                image.pixel(x, y).g = 1;
+                image.pixel(x, y).b = 1;
+            } else {
+                image.pixel(x, y).r = 0;
+                image.pixel(x, y).g = 0;
+                image.pixel(x, y).b = 0;
+            }
         }
     }
     image.save("output/19_tramage.png");
+} 
+    
+void normalisation(sil::Image image)
+{
+    sil::Image grayscaledCopy = image;
+    noirEtBlanc(grayscaledCopy);
+
+    size_t const pixelCount = image.height()*image.width();
+    
+    size_t const dwarf_count = 20;
+
+    std::vector<int> calories;
+
+    // std::srand permet de fixer la "seed" du générateur aléatoire (pour avoir des résultats reproductibles)
+    std::srand(42);
+    
+    for (int i = 0; i < dwarf_count; ++i)
+    {
+      calories.push_back(rand() % 24000 + 100);
+    }
+
+    // affichage optionnel des calories transportées par chaque nain
+    for (int const c : calories)
+    {
+      std::cout << c << ", ";
+    }
+    std::cout << std::endl;
+
+    // TODO: afficher la quantité de provisions la plus grande transportée par un nain
+    
+    int max_provision{0};
+    int max_nain{0};
+
+    int min_provision{24100};
+    int min_nain{0};
+    
+    for (int i{0}; i < calories.size(); i++) {
+        int valeur_courante = calories[i];
+
+        if (valeur_courante > max_provision) {
+            max_provision = valeur_courante;
+            max_nain = i;
+        }
+
+        if (valeur_courante < min_provision) {
+            min_provision = valeur_courante;
+            min_nain = i;
+        }
+    }
+
+    int max_provision2{};
+    int max_provision3{};
+
+    std::sort(calories.begin(), calories.end());
+
+    max_provision = calories[calories.size()-1];
+    max_provision2 = calories[calories.size()-2];
+    max_provision3 = calories[calories.size()-3];
+    min_provision = calories[0];
+
+    std::cout << "La plus grande provision est de " << max_provision << " calories" << std::endl;
+    std::cout << "Elle est détenue par le nain " << max_nain+1 << std::endl;
+    std::cout << "La plus petite provision est de " << min_provision << " calories" << std::endl;
+    std::cout << "Elle est détenue par le nain " << min_nain+1 << std::endl;
+
+    image.save("output/20_normalisation.png");
 }
 
 void convolutions (sil::Image image, sil::Image result)
@@ -417,14 +489,14 @@ int main()
     //     sil::Image image_noire{500, 500};
     //     rosace(image_noire,thickness);
     // }
-    // mosaique(logo);  
-    // mosaiqueMiroir(logo);
+    mosaique(logo);  
+    mosaiqueMiroir(logo);
     // glitch(logo);
     // vortex(logo,result2);
-    convolutions(logo, result1 );
+    // convolutions(logo, result1 );
 
     // vortex(logo,result2);
-    tramage(photo);
-    
+    // tramage(photo);
+    // normalisation(lowContrast);
     // convolutions(logo, result1 );
 }
