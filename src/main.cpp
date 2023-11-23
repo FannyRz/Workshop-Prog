@@ -450,45 +450,50 @@ void convolutions (sil::Image image, sil::Image result)
 
 void algoGeneriqueDeConvolution(std::vector<std::vector<float>> kernel, int ligneKernel, int colonneKernel, sil::Image & image, sil::Image & result)
 {
-    float total {0.f}; 
-    for(int i{0} ; i<ligneKernel ; i++){
-        for(int j{0} ; j<colonneKernel ; j++){
-            total = total +  kernel[i][j];
-        }
-    } 
-
-    for (int x{0}; x < image.width(); x++)
-    {
-        for (int y{0}; y < image.height(); y++)
-        {   
-            float red_moy {};
-            float blue_moy {};
-            float green_moy {};  
-            int indiceLigneMatrice {ligneKernel-1};    
-            int indiceColonneMatrice {0};     
-            for(int n{x-colonneKernel/2} ; n<=x+colonneKernel/2; n++){
-                for(int z{y-ligneKernel/2} ; z<=y+ligneKernel/2; z++){
-                    if(n>=0 && n<image.width() && z>=0 && z<image.height()){
-                        red_moy += image.pixel(n,z).r*kernel[indiceLigneMatrice][indiceColonneMatrice];
-                        blue_moy += image.pixel(n,z).b*kernel[indiceLigneMatrice][indiceColonneMatrice];
-                        green_moy += image.pixel(n,z).g*kernel[indiceLigneMatrice][indiceColonneMatrice];
-                        indiceLigneMatrice --;
+    if((ligneKernel*colonneKernel)%2 == 1){
+        float total {0.f}; 
+        for(int i{0} ; i<ligneKernel ; i++){
+            for(int j{0} ; j<colonneKernel ; j++){
+                total = total +  kernel[i][j];
+            }
+        } 
+  
+        for (int x{0}; x < image.width(); x++)
+        {
+            for (int y{0}; y < image.height(); y++)
+            {   
+                float red_moy {};
+                float blue_moy {};
+                float green_moy {};  
+                int indiceLigneMatrice {ligneKernel-1};    
+                int indiceColonneMatrice {0};     
+                for(int n{x-colonneKernel/2} ; n<=x+colonneKernel/2; n++){
+                    for(int z{y-ligneKernel/2} ; z<=y+ligneKernel/2; z++){
+                        if(n>=0 && n<image.width() && z>=0 && z<image.height()){
+                            red_moy += image.pixel(n,z).r*kernel[indiceLigneMatrice][indiceColonneMatrice];
+                            blue_moy += image.pixel(n,z).b*kernel[indiceLigneMatrice][indiceColonneMatrice];
+                            green_moy += image.pixel(n,z).g*kernel[indiceLigneMatrice][indiceColonneMatrice];
+                            // indiceLigneMatrice --;
+                        }
                     }
+                    indiceColonneMatrice ++;
+                    indiceLigneMatrice = ligneKernel-1;
                 }
-                indiceColonneMatrice ++;
-                indiceLigneMatrice = ligneKernel-1;
-            }
-            if(total!=0){
-                result.pixel(x,y).r = red_moy/total;
-                result.pixel(x,y).b = blue_moy/total;
-                result.pixel(x,y).g = green_moy/total;
-            }else{
-                result.pixel(x,y).r = red_moy;
-                result.pixel(x,y).b = blue_moy;
-                result.pixel(x,y).g = green_moy;
+                if(total!=0){
+                    result.pixel(x,y).r = red_moy/total;
+                    result.pixel(x,y).b = blue_moy/total;
+                    result.pixel(x,y).g = green_moy/total;
+                }else{
+                    result.pixel(x,y).r = red_moy;
+                    result.pixel(x,y).b = blue_moy;
+                    result.pixel(x,y).g = green_moy;
+                }
             }
         }
+    }else{
+        std::cout << "Probleme : convolution ne peut etre appliquer sur une matrice de ce format.";
     }
+ 
 }
 
 void filtresSeparables (std::vector<std::vector<float>> kernel, int tailleKernel, sil::Image image, sil::Image & result){ 
@@ -615,9 +620,9 @@ int main()
     //     /*AlgoGeneriqueDeConvolution*/
     //     sil::Image logo{"images/logo.png"};
     //     sil::Image blackImageLogo{300, 345};
-    //     std::vector<std::vector<float>> kernel {{-1,-1,-1},{-1,-1,-1},{-1,-1,-1}};
-    //     algoGeneriqueDeConvolution(kernel,3,3,logo,blackImageLogo);
-    //     blackImagePhoto.save("output/22_algoGeneriqueDeConvolution.png");
+    //     std::vector<std::vector<float>> kernel {{-2,-1,0},{-2,-1,0}};   
+    //     algoGeneriqueDeConvolution(kernel,2,3,logo,blackImageLogo);
+    //     blackImageLogo.save("output/22_algoGeneriqueDeConvolution.png");
     //    }
     //    {
     //     /*FiltresSeparables*/
