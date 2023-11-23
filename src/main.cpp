@@ -356,64 +356,35 @@ void normalisation(sil::Image image)
     sil::Image grayscaledCopy = image;
     noirEtBlanc(grayscaledCopy);
 
-    size_t const pixelCount = image.height()*image.width();
+    float darkestPixelValue{1.f};
+    float brightestPixelValue{0.f};
+    float deltaValue = brightestPixelValue - darkestPixelValue;
     
-    size_t const dwarf_count = 20;
-
-    std::vector<int> calories;
-
-    // std::srand permet de fixer la "seed" du générateur aléatoire (pour avoir des résultats reproductibles)
-    std::srand(42);
-    
-    for (int i = 0; i < dwarf_count; ++i)
+    for (int x{0}; x < image.width(); x++)
     {
-      calories.push_back(rand() % 24000 + 100);
-    }
-
-    // affichage optionnel des calories transportées par chaque nain
-    for (int const c : calories)
-    {
-      std::cout << c << ", ";
-    }
-    std::cout << std::endl;
-
-    // TODO: afficher la quantité de provisions la plus grande transportée par un nain
-    
-    int max_provision{0};
-    int max_nain{0};
-
-    int min_provision{24100};
-    int min_nain{0};
-    
-    for (int i{0}; i < calories.size(); i++) {
-        int valeur_courante = calories[i];
-
-        if (valeur_courante > max_provision) {
-            max_provision = valeur_courante;
-            max_nain = i;
-        }
-
-        if (valeur_courante < min_provision) {
-            min_provision = valeur_courante;
-            min_nain = i;
+        for (int y{0}; y < image.height(); y++)
+        {
+            if (grayscaledCopy.pixel(x, y).r < darkestPixelValue)
+            {
+                darkestPixelValue = grayscaledCopy.pixel(x, y).r;
+            }
+            
+            else if (grayscaledCopy.pixel(x, y).r > brightestPixelValue)
+            {
+                brightestPixelValue = grayscaledCopy.pixel(x, y).r;
+            }
         }
     }
 
-    int max_provision2{};
-    int max_provision3{};
-
-    std::sort(calories.begin(), calories.end());
-
-    max_provision = calories[calories.size()-1];
-    max_provision2 = calories[calories.size()-2];
-    max_provision3 = calories[calories.size()-3];
-    min_provision = calories[0];
-
-    std::cout << "La plus grande provision est de " << max_provision << " calories" << std::endl;
-    std::cout << "Elle est détenue par le nain " << max_nain+1 << std::endl;
-    std::cout << "La plus petite provision est de " << min_provision << " calories" << std::endl;
-    std::cout << "Elle est détenue par le nain " << min_nain+1 << std::endl;
-
+    for (int x{0}; x < image.width(); x++)
+    {
+        for (int y{0}; y < image.height(); y++)
+        {
+            image.pixel(x, y).r = (image.pixel(x, y).r - darkestPixelValue)*(1.f/brightestPixelValue);
+            image.pixel(x, y).g = (image.pixel(x, y).g - darkestPixelValue)*(1.f/brightestPixelValue);
+            image.pixel(x, y).b = (image.pixel(x, y).b - darkestPixelValue)*(1.f/brightestPixelValue);
+        }
+    }
     image.save("output/20_normalisation.png");
 }
 
@@ -538,7 +509,8 @@ int main()
     // rotation90(logo);
     // RGBSplit(logo, result);
     // luminosite(photo);
-    // disque(image_noire);  
+    // disque(image_noire);
+
     // { /*CERCLE*/
     //     float thickness {};
     //     std::cout << "Entrez l'epaisseur du cercle que vous souhaitez :" ;
@@ -553,13 +525,13 @@ int main()
     //     rosace(image_noire,thickness);
     // }
 
-    mosaique(logo);  
-    mosaiqueMiroir(logo);
-
+    // mosaique(logo);  
+    // mosaiqueMiroir(logo);
     // glitch(logo);
     // vortex(logo,result);
     // tramage(photo);
-
+    normalisation(lowContrast);
+    noirEtBlanc(logo); /*cet appel remet à jour 03_noirEtBlanc*/ 
     // { 
     //    /*CONVOLUTION*/
     //     std::vector<std::vector<float>> kernel {{1.f/9.f,1.f/9.f,1.f/9.f},{1.f/9.f,1.f/9.f,1.f/9.f},{1.f/9.f,1.f/9.f,1.f/9.f}};
@@ -594,4 +566,6 @@ int main()
        
     //    filtresSeparables(kernel,longueur_kernel,logo, result);
     // }
+
+
 }
