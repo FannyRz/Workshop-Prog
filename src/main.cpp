@@ -16,7 +16,6 @@ void seulementLeVert(sil::Image image)
         color.r = 0.f /*mets la composante rouge à 0. 1 couleur = glm::vec3 */ ;
         color.b = 0.f;
     }
-    
     image.save("output/01_seulementLeVert.png");
 }
 
@@ -58,9 +57,7 @@ void degrade(sil::Image image)
     {
         for (int x{0}; x < image.width(); x++)
         {
-            image.pixel(x, y).r += x / (image.width() - 1.0);
-            image.pixel(x, y).g += x / (image.width() - 1.0);
-            image.pixel(x, y).b += x / (image.width() - 1.0);
+            image.pixel(x, y) += x / (image.width() - 1.0);
 
             /* Autre façon de faire, en utilisant la valeur précédente en incrémentant :
             image.pixel(x, y).r += image.pixel(x-1, 0).r + 1.f/(image.width() -1);
@@ -227,54 +224,55 @@ void rosace (sil::Image & image,int thickness){
 
 void mosaique(sil::Image image) 
 {
-    sil::Image canvasMosaic{5*image.width(), 5*image.height()};
+    sil::Image mosaicCanvas{5*image.width(), 5*image.height()};
     
-    for (int canvasCol{0}; canvasCol < 5*image.height(); canvasCol += image.height())
+    for (int mosaicCanvasRow{0}; mosaicCanvasRow < 5; mosaicCanvasRow++)
     {
-        for (int canvasRow{0}; canvasRow < 5*image.width(); canvasRow += image.width())
+        for (int mosaicCanvasCol{0}; mosaicCanvasCol < 5; mosaicCanvasCol++)
         {
             for (int entryImageX{0}; entryImageX < image.width(); entryImageX++)
             {
-                for (int yImageEntry{0}; yImageEntry < image.height(); yImageEntry++)
+                for (int entryImageY{0}; entryImageY < image.height(); entryImageY++)
                 {
-                    canvasMosaic.pixel(entryImageX + canvasRow, yImageEntry + canvasCol) = image.pixel(entryImageX, yImageEntry);
+                    mosaicCanvas.pixel(mosaicCanvasRow*image.width() + entryImageX, mosaicCanvasCol*image.height() + entryImageY) = image.pixel(entryImageX, entryImageY);
                 }
             }
         }
     }
-    canvasMosaic.save("output/14_mosaique.png");
+    mosaicCanvas.save("output/14_mosaique.png");
 }
 
 void mosaiqueMiroir(sil::Image image) 
 {
-    sil::Image canvasMirroredMosaic{5*image.width(), 5*image.height()};
-    int startingPointx{};
-    int startingPointy{};
+    sil::Image mirroredMosaicCanvas{5*image.width(), 5*image.height()};
 
-    for (int mirroredCanvasRow{0}; mirroredCanvasRow < 5; mirroredCanvasRow++) 
+    for (int mirroredMosaicCanvasRow{0}; mirroredMosaicCanvasRow < 5; mirroredMosaicCanvasRow++) 
     {
-        for (int mirroredCanvasCol=0; mirroredCanvasCol<5; mirroredCanvasCol++) 
+        for (int mirroredMosaicCanvasCol{0}; mirroredMosaicCanvasCol < 5; mirroredMosaicCanvasCol++) 
         {
-            for (int xEntryImage{0}; xEntryImage < image.width(); xEntryImage++)
+            for (int entryImageX{0}; entryImageX < image.width(); entryImageX++)
             {
-                for (int yEntryImage{0}; yEntryImage < image.height(); yEntryImage++)
+                for (int entryImageY{0}; entryImageY < image.height(); entryImageY++)
                 {
-                    if (mirroredCanvasRow%2 == 1) {
-                        startingPointx = image.width()-xEntryImage-1;
+                    int startingPointX{};
+                    int startingPointY{};
+
+                    if (mirroredMosaicCanvasRow % 2 == 1) {
+                        startingPointX = image.width()- entryImageX - 1;
                     } else {
-                        startingPointx = xEntryImage;
+                        startingPointX = entryImageX;
                     }
-                    if (mirroredCanvasCol%2 == 1) {
-                        startingPointy = image.height()-yEntryImage-1;
+                    if (mirroredMosaicCanvasCol % 2 == 1) {
+                        startingPointY= image.height() - entryImageY - 1;
                     } else {
-                        startingPointy = yEntryImage;
+                        startingPointY= entryImageY;
                     }
-                    canvasMirroredMosaic.pixel(mirroredCanvasRow*image.width()+xEntryImage, mirroredCanvasCol*image.height()+yEntryImage) = image.pixel(startingPointx, startingPointy);
+                    mirroredMosaicCanvas.pixel(mirroredMosaicCanvasRow*image.width() + entryImageX, mirroredMosaicCanvasCol*image.height() + entryImageY) = image.pixel(startingPointX, startingPointY);
                 }
             }
         }
     }
-    canvasMirroredMosaic.save("output/15_mosaiqueMiroir.png");
+    mirroredMosaicCanvas.save("output/15_mosaiqueMiroir.png");
 }
 
 void glitch(sil::Image image) 
@@ -333,14 +331,12 @@ void tramage(sil::Image image)
         { -0.3125,  0.1875, -0.4375,  0.0625 },
         {  0.4375, -0.0625,  0.3125, -0.1875 },
     };
-
-    noirEtBlanc(image);
     
     for (int x{0}; x < image.width(); x++)
     {
         for (int y{0}; y < image.height(); y++)
         {
-            if (image.pixel(x, y).r > 1 - bayer_matrix_4x4[x % 4][y % 4])
+            if (image.pixel(x, y).r + bayer_matrix_4x4[x % 4][y % 4] > 0.5f)
             {
                 image.pixel(x, y).r = 1;
                 image.pixel(x, y).g = 1;
@@ -556,14 +552,15 @@ int main()
     //     sil::Image image_noire{500, 500};
     //     rosace(image_noire,thickness);
     // }
-    // mosaique(logo);  
-    // mosaiqueMiroir(logo);
+
+    mosaique(logo);  
+    mosaiqueMiroir(logo);
 
     // glitch(logo);
     // vortex(logo,result);
-    // tramage(photo;)
+    // tramage(photo);
 
-    { 
+    // { 
     //    /*CONVOLUTION*/
     //     std::vector<std::vector<float>> kernel {{1.f/9.f,1.f/9.f,1.f/9.f},{1.f/9.f,1.f/9.f,1.f/9.f},{1.f/9.f,1.f/9.f,1.f/9.f}};
     //     convolutions(logo, result);
@@ -575,26 +572,26 @@ int main()
     //    {sil::Image logo{"images/logo.png"};
     //
         //creation du kernel
-        std::vector<std::vector<float>> kernel {};
-        int longueur_kernel {};
-        std::cout << "Entrez la longueur du kartel que vous souhaitez (nombre impair): " ;
-        std::cin >> longueur_kernel; 
+    //     std::vector<std::vector<float>> kernel {};
+    //     int longueur_kernel {};
+    //     std::cout << "Entrez la longueur du kartel que vous souhaitez (nombre impair): " ;
+    //     std::cin >> longueur_kernel; 
 
-        while(longueur_kernel%2==0){
-        std::cout << "Probleme, vous avez entrez un nombre pair. Veuillez recommencer. " << std::endl;
-        std::cout << "Entrez la dimension de votre kernel (nombre impair) : " ;
-        std::cin >> longueur_kernel;
-        }
+    //     while(longueur_kernel%2==0)
+    //     {
+    //         std::cout << "Probleme, vous avez entrez un nombre pair. Veuillez recommencer. " << std::endl;
+    //         std::cout << "Entrez la dimension de votre kernel (nombre impair) : " ;
+    //         std::cin >> longueur_kernel;
+    //     }
          
-        std::vector<float> tmp {}; 
-        for(int i{1} ; i<= longueur_kernel ; i++){
-           for(int j{1} ; j<= longueur_kernel ; j++){
-               tmp.push_back({1.f/(static_cast<float>(longueur_kernel)*static_cast<float>(longueur_kernel))});
-           }
-           kernel.push_back(tmp); 
-        }
+    //     std::vector<float> tmp {}; 
+    //     for(int i{1} ; i<= longueur_kernel ; i++){
+    //        for(int j{1} ; j<= longueur_kernel ; j++){
+    //            tmp.push_back({1.f/(static_cast<float>(longueur_kernel)*static_cast<float>(longueur_kernel))});
+    //        }
+    //        kernel.push_back(tmp); 
+    //     }
        
-       filtresSeparables(kernel,longueur_kernel,logo, result);
-       }
+    //    filtresSeparables(kernel,longueur_kernel,logo, result);
     // }
 }
