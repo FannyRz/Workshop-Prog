@@ -510,10 +510,9 @@ void filtresSeparables (std::vector<std::vector<float>> kernel, int tailleKernel
     }
     matriceLigne.push_back(tmp);  
 
-    algoGeneriqueDeConvolution(matriceColonne,tailleKernel,1,image,result);
     sil::Image result2{300, 345};
-    algoGeneriqueDeConvolution(matriceLigne,1,tailleKernel,result,result2);
-    result2.save("output/23_filtresSeparables.png");
+    algoGeneriqueDeConvolution(matriceColonne,tailleKernel,1,image,result2);
+    algoGeneriqueDeConvolution(matriceLigne,1,tailleKernel,result2,result);
 }
 
 void differenceDeGaussiennes (std::vector<std::vector<float>> kernel1, int longueurKernel1, sil::Image image, sil::Image & result){
@@ -624,10 +623,37 @@ int main()
     //     algoGeneriqueDeConvolution(kernel,2,3,logo,blackImageLogo);
     //     blackImageLogo.save("output/22_algoGeneriqueDeConvolution.png");
     //    }
+       {
+        /*FiltresSeparables*/
+        sil::Image logo{"images/logo.png"};
+        sil::Image blackImageLogo{300, 345};
+
+        //creation du kernel
+        std::vector<std::vector<float>> kernel {};
+        int longueurKernel {};
+        std::cout << "Entrez la longueur du kartel que vous souhaitez (nombre impair): " ;
+        std::cin >> longueurKernel; 
+
+        while(longueurKernel%2==0){
+        std::cout << "Probleme, vous avez entrez un nombre pair. Veuillez recommencer. " << std::endl;
+        std::cout << "Entrez la dimension de votre kernel (nombre impair) : " ;
+        std::cin >> longueurKernel;
+        }
+         
+        std::vector<float> tmp {}; 
+        for(int i{1} ; i<= longueurKernel ; i++){
+           for(int j{1} ; j<= longueurKernel ; j++){
+               tmp.push_back({1.f/(static_cast<float>(longueurKernel)*static_cast<float>(longueurKernel))});
+           }
+           kernel.push_back(tmp); 
+        }
+        filtresSeparables(kernel,longueurKernel,logo, blackImageLogo);
+        blackImageLogo.save("output/23_filtresSeparables.png");
+       }
     //    {
-    //     /*FiltresSeparables*/
-    //     sil::Image logo{"images/logo.png"};
-    //     sil::Image blackImageLogo{300, 345};
+    //     /*DifferenceDeGaussienne*/
+    //     sil::Image photo{"images/photo.jpg"};
+    //     sil::Image blackImagePhoto{500, 500};
 
     //     //creation du kernel
     //     std::vector<std::vector<float>> kernel {};
@@ -648,13 +674,8 @@ int main()
     //        }
     //        kernel.push_back(tmp); 
     //     }
-    //     // filtresSeparables(kernel,longueurKernel,logo, blackImageLogo);
-    //    }
-    //    {
-    //     /*DifferenceDeGaussienne*/
-    //     sil::Image photo{"images/photo.jpg"};
-    //     sil::Image blackImagePhoto{500, 500};
-    //     // differenceDeGaussiennes(kernel, longueurKernel,photo, blackImagePhoto);
+
+    //     differenceDeGaussiennes(kernel, longueurKernel,photo, blackImagePhoto);
     //    }
     // }
 }
