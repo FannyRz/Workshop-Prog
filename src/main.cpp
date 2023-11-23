@@ -627,35 +627,34 @@ int main()
     //    {
     //     /*FiltresSeparables*/
     //     sil::Image logo{"images/logo.png"};
-    //     sil::Image blackImagePhoto{300, 345};
+    //     sil::Image blackImageLogo{300, 345};
 
     //     //creation du kernel
     //     std::vector<std::vector<float>> kernel {};
-    //     int longueur_kernel {};
+    //     int longueurKernel {};
     //     std::cout << "Entrez la longueur du kartel que vous souhaitez (nombre impair): " ;
-    //     std::cin >> longueur_kernel; 
+    //     std::cin >> longueurKernel; 
 
-    //     while(longueur_kernel%2==0){
+    //     while(longueurKernel%2==0){
     //     std::cout << "Probleme, vous avez entrez un nombre pair. Veuillez recommencer. " << std::endl;
     //     std::cout << "Entrez la dimension de votre kernel (nombre impair) : " ;
-    //     std::cin >> longueur_kernel;
+    //     std::cin >> longueurKernel;
     //     }
          
     //     std::vector<float> tmp {}; 
-    //     for(int i{1} ; i<= longueur_kernel ; i++){
-    //        for(int j{1} ; j<= longueur_kernel ; j++){
-    //            tmp.push_back({1.f/(static_cast<float>(longueur_kernel)*static_cast<float>(longueur_kernel))});
+    //     for(int i{1} ; i<= longueurKernel ; i++){
+    //        for(int j{1} ; j<= longueurKernel ; j++){
+    //            tmp.push_back({1.f/(static_cast<float>(longueurKernel)*static_cast<float>(longueurKernel))});
     //        }
     //        kernel.push_back(tmp); 
     //     }
-
-    //    filtresSeparables(kernel,longueur_kernel,logo, blackImagePhoto);
+    //     // filtresSeparables(kernel,longueurKernel,logo, blackImageLogo);
     //    }
-    //    {       
+    //    {
     //     /*DifferenceDeGaussienne*/
     //     sil::Image photo{"images/photo.jpg"};
     //     sil::Image blackImagePhoto{500, 500};
-    //     // differenceDeGaussiennes(kernel, longueur_kernel,photo, blackImagePhoto);
+    //     // differenceDeGaussiennes(kernel, longueurKernel,photo, blackImagePhoto);
     //    }
     // }
 }
