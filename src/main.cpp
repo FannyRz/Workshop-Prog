@@ -311,7 +311,7 @@ glm::vec2 rotated(glm::vec2 point, glm::vec2 center_of_rotation, float angle)
     return glm::vec2{glm::rotate(glm::mat3{1.f}, angle) * glm::vec3{point - center_of_rotation, 0.f}} + center_of_rotation;
 } 
     
-void vortex(sil::Image image, sil::Image result2)
+void vortex(sil::Image image, sil::Image result)
 {
     for (int x{0}; x < image.width(); x++)
     {
@@ -320,11 +320,11 @@ void vortex(sil::Image image, sil::Image result2)
             double distance {sqrt((x-image.width()/2)*(x-image.width()/2)+(y-image.height()/2)*(y-image.height()/2))};
             glm::vec2 nouvelle_position {rotated({x,y},{image.width()/2, image.height()/2},distance/10)}; 
             if(nouvelle_position.x>=0 && nouvelle_position.x<image.width() && nouvelle_position.y<image.height() &&nouvelle_position.y>=0){
-                result2.pixel(x,y) = image.pixel(nouvelle_position.x, nouvelle_position.y);
+                result.pixel(x,y) = image.pixel(nouvelle_position.x, nouvelle_position.y);
             }
         }
     }
-    result2.save("output/18_vortex.png");
+    result.save("output/18_vortex.png");
 } 
     
 void tramage(sil::Image image)
@@ -386,14 +386,14 @@ void convolutions (sil::Image image, sil::Image result)
     result.save("output/21_convolutions.png");
 }
 
-void algoGeneriqueDeConvolution(std::vector<std::vector<float>> kernel, sil::Image image, sil::Image result)
+void algoGeneriqueDeConvolution(std::vector<std::vector<float>> kernel, int ligneKernel, int colonneKernel, sil::Image & image, sil::Image & result)
 {
     float total {0.f}; 
-    for(int i{0} ; i<3 ; i++){
-        for(int j{0} ; j<3 ; j++){
+    for(int i{0} ; i<ligneKernel ; i++){
+        for(int j{0} ; j<colonneKernel ; j++){
             total = total +  kernel[i][j];
         }
-    }   
+    } 
 
     for (int x{0}; x < image.width(); x++)
     {
@@ -402,19 +402,19 @@ void algoGeneriqueDeConvolution(std::vector<std::vector<float>> kernel, sil::Ima
             float red_moy {};
             float blue_moy {};
             float green_moy {};  
-            int ligne_matrice {2};    
-            int colonne_matrice {0};     
-            for(int n{x-1} ; n<=x+1; n++){
-                for(int z{y-1} ; z<=y+1; z++){
+            int indiceLigneMatrice {ligneKernel-1};    
+            int indiceColonneMatrice {0};     
+            for(int n{x-colonneKernel/2} ; n<=x+colonneKernel/2; n++){
+                for(int z{y-ligneKernel/2} ; z<=y+ligneKernel/2; z++){
                     if(n>=0 && n<image.width() && z>=0 && z<image.height()){
-                        red_moy += image.pixel(n,z).r*kernel[ligne_matrice][colonne_matrice];
-                        blue_moy += image.pixel(n,z).b*kernel[ligne_matrice][colonne_matrice];
-                        green_moy += image.pixel(n,z).g*kernel[ligne_matrice][colonne_matrice];
-                        ligne_matrice --;
+                        red_moy += image.pixel(n,z).r*kernel[indiceLigneMatrice][indiceColonneMatrice];
+                        blue_moy += image.pixel(n,z).b*kernel[indiceLigneMatrice][indiceColonneMatrice];
+                        green_moy += image.pixel(n,z).g*kernel[indiceLigneMatrice][indiceColonneMatrice];
+                        indiceLigneMatrice --;
                     }
                 }
-                colonne_matrice ++;
-                ligne_matrice = 2;
+                indiceColonneMatrice ++;
+                indiceLigneMatrice = ligneKernel-1;
             }
             if(total!=0){
                 result.pixel(x,y).r = red_moy/total;
@@ -427,7 +427,26 @@ void algoGeneriqueDeConvolution(std::vector<std::vector<float>> kernel, sil::Ima
             }
         }
     }
-    result.save("output/22_algoGeneriqueDeConvolution.png");
+}
+
+void filtresSeparables (std::vector<std::vector<float>> kernel, int tailleKernel, sil::Image image, sil::Image result){ 
+    std::vector<std::vector<float>> matriceColonne {};  
+    std::vector<std::vector<float>> matriceLigne {};  
+
+    for(int i{1} ; i<= tailleKernel ; i++){
+        matriceColonne.push_back({1.f/static_cast<float>(tailleKernel)});
+    }
+
+    std::vector<float> tmp {};  
+    for(int i{1} ; i<= tailleKernel ; i++){
+        tmp.push_back({1.f/static_cast<float>(tailleKernel)});
+    }
+    matriceLigne.push_back(tmp);  
+
+    algoGeneriqueDeConvolution(matriceColonne,tailleKernel,1,image,result);
+    sil::Image result2{300, 345};
+    algoGeneriqueDeConvolution(matriceLigne,1,tailleKernel,result,result2);
+    result2.save("output/23_filtresSeparables.png");
 }
 
 int main()
@@ -470,15 +489,40 @@ int main()
 
     // glitch(logo);
     // vortex(logo,result);
-    // convolutions(logo, result);
     // tramage(photo;)
 
-    // { /*CONVOLUTION*/
-    //     kernel pour convolution
+    { 
+    //    /*CONVOLUTION*/
     //     std::vector<std::vector<float>> kernel {{1.f/9.f,1.f/9.f,1.f/9.f},{1.f/9.f,1.f/9.f,1.f/9.f},{1.f/9.f,1.f/9.f,1.f/9.f}};
-    //     Autre kernel
-    //     std::vector<std::vector<float>> kernel {{-1,-1,-1},{-1,8,-1},{-1,-1,-1}};
-    //     algoGeneriqueDeConvolution(kernel,logo,result);
-    // }
+    //     convolutions(logo, result);
+    //    /*AlgoGeneriqueDeConvolution*/
+    //     std::vector<std::vector<float>> kernel {{-1,-1,-1},{-1,-1,-1},{-1,-1,-1}};
+    //     algoGeneriqueDeConvolution(kernel,3,3,logo,result);
+    //     result.save("output/22_algoGeneriqueDeConvolution.png");
+    //   /*FiltresSeparables*/
+    //    {sil::Image logo{"images/logo.png"};
+    //
+        //creation du kernel
+        std::vector<std::vector<float>> kernel {};
+        int longueur_kernel {};
+        std::cout << "Entrez la longueur du kartel que vous souhaitez (nombre impair): " ;
+        std::cin >> longueur_kernel; 
 
+        while(longueur_kernel%2==0){
+        std::cout << "Probleme, vous avez entrez un nombre pair. Veuillez recommencer. " << std::endl;
+        std::cout << "Entrez la dimension de votre kernel (nombre impair) : " ;
+        std::cin >> longueur_kernel;
+        }
+         
+        std::vector<float> tmp {}; 
+        for(int i{1} ; i<= longueur_kernel ; i++){
+           for(int j{1} ; j<= longueur_kernel ; j++){
+               tmp.push_back({1.f/(static_cast<float>(longueur_kernel)*static_cast<float>(longueur_kernel))});
+           }
+           kernel.push_back(tmp); 
+        }
+       
+       filtresSeparables(kernel,longueur_kernel,logo, result);
+       }
+    // }
 }
