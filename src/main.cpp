@@ -17,7 +17,6 @@ void seulementLeVert(sil::Image image)
         color.r = 0.f /*mets la composante rouge à 0. 1 couleur = glm::vec3 */ ;
         color.b = 0.f;
     }
-    
     image.save("output/01_seulementLeVert.png");
 }
 
@@ -59,9 +58,7 @@ void degrade(sil::Image image)
     {
         for (int x{0}; x < image.width(); x++)
         {
-            image.pixel(x, y).r += x / (image.width() - 1.0);
-            image.pixel(x, y).g += x / (image.width() - 1.0);
-            image.pixel(x, y).b += x / (image.width() - 1.0);
+            image.pixel(x, y) += x / (image.width() - 1.0);
 
             /* Autre façon de faire, en utilisant la valeur précédente en incrémentant :
             image.pixel(x, y).r += image.pixel(x-1, 0).r + 1.f/(image.width() -1);
@@ -228,54 +225,55 @@ void rosace (sil::Image & image,int thickness){
 
 void mosaique(sil::Image image) 
 {
-    sil::Image canvasMosaic{5*image.width(), 5*image.height()};
+    sil::Image mosaicCanvas{5*image.width(), 5*image.height()};
     
-    for (int canvasCol{0}; canvasCol < 5*image.height(); canvasCol += image.height())
+    for (int mosaicCanvasRow{0}; mosaicCanvasRow < 5; mosaicCanvasRow++)
     {
-        for (int canvasRow{0}; canvasRow < 5*image.width(); canvasRow += image.width())
+        for (int mosaicCanvasCol{0}; mosaicCanvasCol < 5; mosaicCanvasCol++)
         {
             for (int entryImageX{0}; entryImageX < image.width(); entryImageX++)
             {
-                for (int yImageEntry{0}; yImageEntry < image.height(); yImageEntry++)
+                for (int entryImageY{0}; entryImageY < image.height(); entryImageY++)
                 {
-                    canvasMosaic.pixel(entryImageX + canvasRow, yImageEntry + canvasCol) = image.pixel(entryImageX, yImageEntry);
+                    mosaicCanvas.pixel(mosaicCanvasRow*image.width() + entryImageX, mosaicCanvasCol*image.height() + entryImageY) = image.pixel(entryImageX, entryImageY);
                 }
             }
         }
     }
-    canvasMosaic.save("output/14_mosaique.png");
+    mosaicCanvas.save("output/14_mosaique.png");
 }
 
 void mosaiqueMiroir(sil::Image image) 
 {
-    sil::Image canvasMirroredMosaic{5*image.width(), 5*image.height()};
-    int startingPointx{};
-    int startingPointy{};
+    sil::Image mirroredMosaicCanvas{5*image.width(), 5*image.height()};
 
-    for (int mirroredCanvasRow{0}; mirroredCanvasRow < 5; mirroredCanvasRow++) 
+    for (int mirroredMosaicCanvasRow{0}; mirroredMosaicCanvasRow < 5; mirroredMosaicCanvasRow++) 
     {
-        for (int mirroredCanvasCol=0; mirroredCanvasCol<5; mirroredCanvasCol++) 
+        for (int mirroredMosaicCanvasCol{0}; mirroredMosaicCanvasCol < 5; mirroredMosaicCanvasCol++) 
         {
-            for (int xEntryImage{0}; xEntryImage < image.width(); xEntryImage++)
+            for (int entryImageX{0}; entryImageX < image.width(); entryImageX++)
             {
-                for (int yEntryImage{0}; yEntryImage < image.height(); yEntryImage++)
+                for (int entryImageY{0}; entryImageY < image.height(); entryImageY++)
                 {
-                    if (mirroredCanvasRow%2 == 1) {
-                        startingPointx = image.width()-xEntryImage-1;
+                    int startingPointX{};
+                    int startingPointY{};
+
+                    if (mirroredMosaicCanvasRow % 2 == 1) {
+                        startingPointX = image.width()- entryImageX - 1;
                     } else {
-                        startingPointx = xEntryImage;
+                        startingPointX = entryImageX;
                     }
-                    if (mirroredCanvasCol%2 == 1) {
-                        startingPointy = image.height()-yEntryImage-1;
+                    if (mirroredMosaicCanvasCol % 2 == 1) {
+                        startingPointY= image.height() - entryImageY - 1;
                     } else {
-                        startingPointy = yEntryImage;
+                        startingPointY= entryImageY;
                     }
-                    canvasMirroredMosaic.pixel(mirroredCanvasRow*image.width()+xEntryImage, mirroredCanvasCol*image.height()+yEntryImage) = image.pixel(startingPointx, startingPointy);
+                    mirroredMosaicCanvas.pixel(mirroredMosaicCanvasRow*image.width() + entryImageX, mirroredMosaicCanvasCol*image.height() + entryImageY) = image.pixel(startingPointX, startingPointY);
                 }
             }
         }
     }
-    canvasMirroredMosaic.save("output/15_mosaiqueMiroir.png");
+    mirroredMosaicCanvas.save("output/15_mosaiqueMiroir.png");
 }
 
 void glitch(sil::Image image) 
@@ -357,14 +355,12 @@ void tramage(sil::Image image)
         { -0.3125,  0.1875, -0.4375,  0.0625 },
         {  0.4375, -0.0625,  0.3125, -0.1875 },
     };
-
-    noirEtBlanc(image);
     
     for (int x{0}; x < image.width(); x++)
     {
         for (int y{0}; y < image.height(); y++)
         {
-            if (image.pixel(x, y).r > 1 - bayer_matrix_4x4[x % 4][y % 4])
+            if (image.pixel(x, y).r + bayer_matrix_4x4[x % 4][y % 4] > 0.5f)
             {
                 image.pixel(x, y).r = 1;
                 image.pixel(x, y).g = 1;
@@ -384,64 +380,35 @@ void normalisation(sil::Image image)
     sil::Image grayscaledCopy = image;
     noirEtBlanc(grayscaledCopy);
 
-    size_t const pixelCount = image.height()*image.width();
+    float darkestPixelValue{1.f};
+    float brightestPixelValue{0.f};
+    float deltaValue = brightestPixelValue - darkestPixelValue;
     
-    size_t const dwarf_count = 20;
-
-    std::vector<int> calories;
-
-    // std::srand permet de fixer la "seed" du générateur aléatoire (pour avoir des résultats reproductibles)
-    std::srand(42);
-    
-    for (int i = 0; i < dwarf_count; ++i)
+    for (int x{0}; x < image.width(); x++)
     {
-      calories.push_back(rand() % 24000 + 100);
-    }
-
-    // affichage optionnel des calories transportées par chaque nain
-    for (int const c : calories)
-    {
-      std::cout << c << ", ";
-    }
-    std::cout << std::endl;
-
-    // TODO: afficher la quantité de provisions la plus grande transportée par un nain
-    
-    int max_provision{0};
-    int max_nain{0};
-
-    int min_provision{24100};
-    int min_nain{0};
-    
-    for (int i{0}; i < calories.size(); i++) {
-        int valeur_courante = calories[i];
-
-        if (valeur_courante > max_provision) {
-            max_provision = valeur_courante;
-            max_nain = i;
-        }
-
-        if (valeur_courante < min_provision) {
-            min_provision = valeur_courante;
-            min_nain = i;
+        for (int y{0}; y < image.height(); y++)
+        {
+            if (grayscaledCopy.pixel(x, y).r < darkestPixelValue)
+            {
+                darkestPixelValue = grayscaledCopy.pixel(x, y).r;
+            }
+            
+            else if (grayscaledCopy.pixel(x, y).r > brightestPixelValue)
+            {
+                brightestPixelValue = grayscaledCopy.pixel(x, y).r;
+            }
         }
     }
 
-    int max_provision2{};
-    int max_provision3{};
-
-    std::sort(calories.begin(), calories.end());
-
-    max_provision = calories[calories.size()-1];
-    max_provision2 = calories[calories.size()-2];
-    max_provision3 = calories[calories.size()-3];
-    min_provision = calories[0];
-
-    std::cout << "La plus grande provision est de " << max_provision << " calories" << std::endl;
-    std::cout << "Elle est détenue par le nain " << max_nain+1 << std::endl;
-    std::cout << "La plus petite provision est de " << min_provision << " calories" << std::endl;
-    std::cout << "Elle est détenue par le nain " << min_nain+1 << std::endl;
-
+    for (int x{0}; x < image.width(); x++)
+    {
+        for (int y{0}; y < image.height(); y++)
+        {
+            image.pixel(x, y).r = (image.pixel(x, y).r - darkestPixelValue)*(1.f/brightestPixelValue);
+            image.pixel(x, y).g = (image.pixel(x, y).g - darkestPixelValue)*(1.f/brightestPixelValue);
+            image.pixel(x, y).b = (image.pixel(x, y).b - darkestPixelValue)*(1.f/brightestPixelValue);
+        }
+    }
     image.save("output/20_normalisation.png");
 }
 
@@ -612,7 +579,8 @@ int main()
     // rotation90(logo);
     // RGBSplit(logo, result);
     // luminosite(photo);
-    // disque(image_noire);  
+    // disque(image_noire);
+
     // { /*CERCLE*/
     //     float thickness {};
     //     std::cout << "Entrez l'epaisseur du cercle que vous souhaitez :" ;
@@ -626,6 +594,7 @@ int main()
     //     sil::Image image_noire{500, 500};
     //     rosace(image_noire,thickness);
     // }
+
     // mosaique(logo);  
     // mosaiqueMiroir(logo);
     { /*Fractale*/
@@ -635,7 +604,8 @@ int main()
     // glitch(logo);
     // vortex(logo,result);
     // tramage(photo);
-
+    normalisation(lowContrast);
+    noirEtBlanc(logo); /*cet appel remet à jour 03_noirEtBlanc*/ 
     // { 
     //    /*CONVOLUTION*/
     //     std::vector<std::vector<float>> kernel {{1.f/9.f,1.f/9.f,1.f/9.f},{1.f/9.f,1.f/9.f,1.f/9.f},{1.f/9.f,1.f/9.f,1.f/9.f}};
