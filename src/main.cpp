@@ -6,6 +6,7 @@
 #include <cmath>
 #include <vector>
 #include <glm/gtx/matrix_transform_2d.hpp>
+#include <complex>
 
 float pi {M_PI};
     
@@ -29,7 +30,7 @@ void echangeRougeBleu(sil::Image image)
     image.save("output/02_echangeRougeBleu.png");
 }
 
-void noirEtBlanc(sil::Image image) 
+void noirEtBlanc(sil::Image & image) 
 {
     for (glm::vec3 & color : image.pixels()) 
     {
@@ -302,6 +303,29 @@ void glitch(sil::Image image)
     image.save("output/16_glitch.png");
 }
 
+void fractale(sil::Image image){
+    for (float x{-(static_cast<float>(image.width())/200.f)}; x <= (static_cast<float>(image.width())/200.f); x= x+0.01f)
+    {
+        for (float y{-(static_cast<float>(image.height())/200.f)}; y <= (static_cast<float>(image.height())/200.f); y= y+0.01f)
+        {
+            std::complex<float>  c{x, y};
+            std::complex<float> z{0.f, 0.f}; // Définis le nombre z = 0 + 0*i
+            float compteur {0.f};
+            for (int i{0}; i<50; i++){
+                z = z*z+c;
+                compteur += 1.f;
+                if(std::abs(z) > 2){  
+                    break;
+                }
+            }
+            image.pixel(x*100.f+(static_cast<float>(image.width())/2.f),y*100.f+(static_cast<float>(image.height())/2.f)).r = compteur/50.f;
+            image.pixel(x*100.f+(static_cast<float>(image.width())/2.f),y*100.f+(static_cast<float>(image.height())/2.f)).b = compteur/50.f;
+            image.pixel(x*100.f+(static_cast<float>(image.width())/2.f),y*100.f+(static_cast<float>(image.height())/2.f)).g = compteur/50.f; 
+        }     
+    }
+    image.save("output/17_fractale.png");
+}
+
 glm::vec2 rotated(glm::vec2 point, glm::vec2 center_of_rotation, float angle)
 {
     return glm::vec2{glm::rotate(glm::mat3{1.f}, angle) * glm::vec3{point - center_of_rotation, 0.f}} + center_of_rotation;
@@ -458,7 +482,7 @@ void convolutions (sil::Image image, sil::Image result)
     result.save("output/21_convolutions.png");
 }
 
-void algoGeneriqueDeConvolution(std::vector<std::vector<float>> kernel, int ligneKernel, int colonneKernel, sil::Image & image, sil::Image & result)
+void algoGeneriqueDeConvolution(std::vector<std::vector<float>> kernel, int ligneKernel, int colonneKernel, sil::Image image, sil::Image & result)
 {
     float total {0.f}; 
     for(int i{0} ; i<ligneKernel ; i++){
@@ -501,7 +525,7 @@ void algoGeneriqueDeConvolution(std::vector<std::vector<float>> kernel, int lign
     }
 }
 
-void filtresSeparables (std::vector<std::vector<float>> kernel, int tailleKernel, sil::Image image, sil::Image result){ 
+void filtresSeparables (std::vector<std::vector<float>> kernel, int tailleKernel, sil::Image image, sil::Image & result){ 
     std::vector<std::vector<float>> matriceColonne {};  
     std::vector<std::vector<float>> matriceLigne {};  
 
@@ -521,6 +545,49 @@ void filtresSeparables (std::vector<std::vector<float>> kernel, int tailleKernel
     result2.save("output/23_filtresSeparables.png");
 }
 
+void differenceDeGaussiennes (std::vector<std::vector<float>> kernel1, int longueurKernel1, sil::Image image, sil::Image & result){
+    sil::Image result1{500, 500};
+    sil::Image result2{500, 500};
+
+    //creation du kernel2
+    std::vector<std::vector<float>> kernel2 {};
+    int longueurKernel2 {longueurKernel1+10};
+    std::vector<float> tmp {}; 
+    for(int i{1} ; i<= longueurKernel2 ; i++){
+        for(int j{1} ; j<= longueurKernel2 ; j++){
+            tmp.push_back({1.f/(static_cast<float>(longueurKernel2)*static_cast<float>(longueurKernel2))});
+        }
+        kernel2.push_back(tmp); 
+    }
+    
+    filtresSeparables(kernel1,longueurKernel1,image,result1);
+    // filtresSeparables(kernel2,longueurKernel2,image,result2);
+    // for (int x{0}; x < image.width(); x++)
+    // {
+    //     for (int y{0}; y < image.height(); y++)
+    //     { 
+    //         result.pixel(x,y) = result1.pixel(x,y) - result2.pixel(x,y);
+    //     }
+    // }
+    // noirEtBlanc(result);
+    // for (int x{0}; x < image.width(); x++)
+    // {
+    //     for (int y{0}; y < image.height(); y++)
+    //     { 
+    //         if(result.pixel(x,y).r >=0.2f){
+    //             result.pixel(x,y).r = 0.f;
+    //             result.pixel(x,y).b = 0.f;
+    //             result.pixel(x,y).g = 0.f;
+    //         }else{
+    //             result.pixel(x,y).r = 1.f;
+    //             result.pixel(x,y).b = 1.f;
+    //             result.pixel(x,y).g = 1.f;
+    //         }
+    //     }
+    // }
+    // result.save("output/24_differenceDeGaussienne.png");
+}
+
 int main()
 {
     sil::Image logo{"images/logo.png"};
@@ -533,7 +600,10 @@ int main()
 
     // seulementLeVert(logo);
     // echangeRougeBleu(logo);
-    // noirEtBlanc(logo);
+    // { /*noirEtBlanc*/
+        // sil::Image logo{"images/logo.png"};
+        // noirEtBlanc(logo);
+        // }
     // negatif(logo);
     // degrade(blackRectangle);
     // miroirReverse(logo); 
@@ -558,12 +628,15 @@ int main()
     // }
     // mosaique(logo);  
     // mosaiqueMiroir(logo);
+    { /*Fractale*/
+        fractale(image_noire);
+    }
 
     // glitch(logo);
     // vortex(logo,result);
-    // tramage(photo;)
+    // tramage(photo);
 
-    { 
+    // { 
     //    /*CONVOLUTION*/
     //     std::vector<std::vector<float>> kernel {{1.f/9.f,1.f/9.f,1.f/9.f},{1.f/9.f,1.f/9.f,1.f/9.f},{1.f/9.f,1.f/9.f,1.f/9.f}};
     //     convolutions(logo, result);
@@ -572,29 +645,37 @@ int main()
     //     algoGeneriqueDeConvolution(kernel,3,3,logo,result);
     //     result.save("output/22_algoGeneriqueDeConvolution.png");
     //   /*FiltresSeparables*/
-    //    {sil::Image logo{"images/logo.png"};
-    //
-        //creation du kernel
-        std::vector<std::vector<float>> kernel {};
-        int longueur_kernel {};
-        std::cout << "Entrez la longueur du kartel que vous souhaitez (nombre impair): " ;
-        std::cin >> longueur_kernel; 
+    //    {
+    //     sil::Image logo{"images/logo.png"};
+    //     sil::Image result{300, 345};
 
-        while(longueur_kernel%2==0){
-        std::cout << "Probleme, vous avez entrez un nombre pair. Veuillez recommencer. " << std::endl;
-        std::cout << "Entrez la dimension de votre kernel (nombre impair) : " ;
-        std::cin >> longueur_kernel;
-        }
+    //     //creation du kernel
+    //     std::vector<std::vector<float>> kernel {};
+    //     int longueur_kernel {};
+    //     std::cout << "Entrez la longueur du kartel que vous souhaitez (nombre impair): " ;
+    //     std::cin >> longueur_kernel; 
+
+    //     while(longueur_kernel%2==0){
+    //     std::cout << "Probleme, vous avez entrez un nombre pair. Veuillez recommencer. " << std::endl;
+    //     std::cout << "Entrez la dimension de votre kernel (nombre impair) : " ;
+    //     std::cin >> longueur_kernel;
+    //     }
          
-        std::vector<float> tmp {}; 
-        for(int i{1} ; i<= longueur_kernel ; i++){
-           for(int j{1} ; j<= longueur_kernel ; j++){
-               tmp.push_back({1.f/(static_cast<float>(longueur_kernel)*static_cast<float>(longueur_kernel))});
-           }
-           kernel.push_back(tmp); 
-        }
+    //     std::vector<float> tmp {}; 
+    //     for(int i{1} ; i<= longueur_kernel ; i++){
+    //        for(int j{1} ; j<= longueur_kernel ; j++){
+    //            tmp.push_back({1.f/(static_cast<float>(longueur_kernel)*static_cast<float>(longueur_kernel))});
+    //        }
+    //        kernel.push_back(tmp); 
+    //     }
+
+    //    filtresSeparables(kernel,longueur_kernel,logo, result);
        
-       filtresSeparables(kernel,longueur_kernel,logo, result);
-       }
-    // }
+    //   /*DifferenceDeGaussienne*/
+    //     sil::Image photo{"images/photo.jpg"};
+    //     sil::Image resultPhoto{500, 500};
+    //     differenceDeGaussiennes(kernel, longueur_kernel,photo, resultPhoto);
+    //    }
+    //
+    // // }
 }
