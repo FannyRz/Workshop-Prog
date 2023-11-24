@@ -168,6 +168,7 @@ void brightness(sil::Image image)
             color.b = sqrt(color.b);
         }
         break;
+        image.save("output/10_brightnessLighten.png");
     
     default:
         for (glm::vec3 & color : image.pixels()) 
@@ -177,8 +178,8 @@ void brightness(sil::Image image)
             color.b = pow (color.b, 2);
         }
         break;
+        image.save("output/10_brightnessDarken.png");
     }
-    image.save("output/10_brightnessDarken.png");
 }
 
 void disk(sil::Image image,int centerX, int centerY, int thickness){
@@ -380,7 +381,6 @@ void normalisation(sil::Image image)
 
     float darkestPixelValue{1.f};
     float brightestPixelValue{0.f};
-    float deltaValue = brightestPixelValue - darkestPixelValue;
     
     for (int x{0}; x < image.width(); x++)
     {
@@ -398,13 +398,15 @@ void normalisation(sil::Image image)
         }
     }
 
+    float deltaValue = brightestPixelValue - darkestPixelValue;
+
     for (int x{0}; x < image.width(); x++)
     {
         for (int y{0}; y < image.height(); y++)
         {
-            image.pixel(x, y).r = (image.pixel(x, y).r - darkestPixelValue)*(1.f/brightestPixelValue);
-            image.pixel(x, y).g = (image.pixel(x, y).g - darkestPixelValue)*(1.f/brightestPixelValue);
-            image.pixel(x, y).b = (image.pixel(x, y).b - darkestPixelValue)*(1.f/brightestPixelValue);
+            image.pixel(x, y).r = (image.pixel(x, y).r - darkestPixelValue)*(1.f/deltaValue);
+            image.pixel(x, y).g = (image.pixel(x, y).g - darkestPixelValue)*(1.f/deltaValue);
+            image.pixel(x, y).b = (image.pixel(x, y).b - darkestPixelValue)*(1.f/deltaValue);
         }
     }
     image.save("output/20_normalisation.png");
@@ -702,5 +704,5 @@ int main()
     //    }
     // }
 
-    pixelSorting(logo);
+    // pixelSorting(logo);
 }
