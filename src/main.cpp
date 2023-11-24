@@ -561,19 +561,19 @@ void differenceDeGaussiennes (std::vector<std::vector<float>> kernel1, int width
 
 void pixelSorting(sil::Image image)
 {
-    int pxToSortStart{0};
-    int sortedRow {200};
-    int gap{500};
+    int sortedRow = random_int(20, 200);
+    int gap = random_int(100, 1000);
 
-    for (int pxPosition{0}; pxPosition < image.height()*image.width() - image.width(); pxPosition+=image.width())
+    for (int pxPosition{0}; pxPosition < image.height()*image.width(); pxPosition+= sortedRow + gap)
     {
-        std::sort(image.pixels().begin() + pxPosition, image.pixels().begin() + pxPosition + image.width(), [](glm::vec3 const& color1, glm::vec3 const& color2)
+        std::sort(image.pixels().begin() + pxPosition, image.pixels().begin() + pxPosition + sortedRow, [](glm::vec3 const& color1, glm::vec3 const& color2)
         {
             return ((color1.r + color1.g + color1.b) / 3) < ((color2.r + color2.g + color2.b) / 3);
         });
+        int gap = random_int(100, 1000);
+        int sortedRow = random_int(20, 200);
     }
-
-    image.save("output/25_pixelSort.png");
+    image.save("output/25_pixelSorting.png");
 }
 
 int main()
