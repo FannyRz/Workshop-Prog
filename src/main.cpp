@@ -635,7 +635,7 @@ int main()
     //     //creation du kernel
     //     std::vector<std::vector<float>> kernel {};
     //     int longueurKernel {};
-    //     std::cout << "Entrez la longueur du kartel que vous souhaitez (nombre impair): " ;
+    //     std::cout << "Entrez la longueur du kertel que vous souhaitez (nombre impair): " ;
     //     std::cin >> longueurKernel; 
 
     //     while(longueurKernel%2==0){
