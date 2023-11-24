@@ -488,15 +488,35 @@ void filtresSeparables (std::vector<std::vector<float>> kernel, int tailleKernel
     result2.save("output/23_filtresSeparables.png");
 }
 
+void pixelSorting(sil::Image image)
+{
+    // Choppe-moi 40 pixels à la suite, de position = 800 à position = 840
+    // Trie-lez selon leur luminosité
+    // remets-les au même endroit
+
+    vector<int>vect_sortPixel;
+    
+    for(int y=0; y<height; y++)
+    {
+        for(int x=0; x<width; x++)
+        {
+            vect_sortPixel.push_back(image.pixel(y, x));
+            sort(vect_sortPixel.begin(), vect_sortPixel.end(), sortPixel);
+        }
+    }
+
+    image.save("output/25_pixelSort.png");
+}
+
 int main()
 {
     sil::Image logo{"images/logo.png"};
     sil::Image photo{"images/photo.jpg"};
     sil::Image lowContrast{"images/photo_faible_contraste.jpg"};
 
-    sil::Image blackRectangle{300, 200};
-    sil::Image image_noire{500, 500};  
-    sil::Image result{300, 345};
+    // sil::Image blackRectangle{300, 200};
+    // sil::Image image_noire{500, 500};  
+    // sil::Image result{300, 345};
 
     // seulementLeVert(logo);
     // echangeRougeBleu(logo);
@@ -529,9 +549,9 @@ int main()
     // mosaiqueMiroir(logo);
     // glitch(logo);
     // vortex(logo,result);
-    // tramage(photo);
-    normalisation(lowContrast);
-    noirEtBlanc(logo); /*cet appel remet à jour 03_noirEtBlanc*/ 
+    // // tramage(photo);
+    // normalisation(lowContrast);
+    // noirEtBlanc(logo); /*cet appel remet à jour 03_noirEtBlanc*/ 
     // { 
     //    /*CONVOLUTION*/
     //     std::vector<std::vector<float>> kernel {{1.f/9.f,1.f/9.f,1.f/9.f},{1.f/9.f,1.f/9.f,1.f/9.f},{1.f/9.f,1.f/9.f,1.f/9.f}};
@@ -567,5 +587,5 @@ int main()
     //    filtresSeparables(kernel,longueur_kernel,logo, result);
     // }
 
-
+    pixelSorting(logo);
 }
