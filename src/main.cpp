@@ -561,19 +561,16 @@ void differenceDeGaussiennes (std::vector<std::vector<float>> kernel1, int longu
 
 void pixelSorting(sil::Image image)
 {
-    // Choppe-moi 40 pixels à la suite, de position = 800 à position = 840
-    // Trie-lez selon leur luminosité
-    // remets-les au même endroit
+    int sortedRowStart {0};
+    int sortedRow {200};
+    int gap{500};
 
-    vector<int>vect_sortPixel;
-    
-    for(int y=0; y<height; y++)
+    for (int pxPosition{0}; pxPosition < image.height()*image.width() - image.width(); pxPosition+=image.width())
     {
-        for(int x=0; x<width; x++)
+        std::sort(image.pixels().begin() + pxPosition, image.pixels().begin() + pxPosition + image.width(), [](glm::vec3 const& color1, glm::vec3 const& color2)
         {
-            vect_sortPixel.push_back(image.pixel(y, x));
-            sort(vect_sortPixel.begin(), vect_sortPixel.end(), sortPixel);
-        }
+            return ((color1.r + color1.g + color1.b) / 3) < ((color2.r + color2.g + color2.b) / 3);
+        });
     }
 
     image.save("output/25_pixelSort.png");
@@ -698,4 +695,6 @@ int main()
     //     differenceDeGaussiennes(kernel, longueurKernel, tau, photo, blackImagePhoto);
     //    }
     // }
+
+    pixelSorting(logo);
 }
