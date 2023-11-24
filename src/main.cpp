@@ -412,14 +412,14 @@ void normalisation(sil::Image image)
 
 void convolutions (sil::Image image, sil::Image result)
 {
-    int kernel {};
-    std::cout << "Entrez la dimension de votre kernel pour votre convolutions (nombre impair) : " ;
-    std::cin >> kernel;
+    int withKernel {};
+    std::cout << "Entrez la longueur de votre kernel pour votre convolutions (nombre impair) : " ;
+    std::cin >> withKernel;
 
-    while(kernel%2==0){
+    while(withKernel%2==0){
         std::cout << "Probleme, vous avez entrez un nombre pair. Veuillez recommencer. " << std::endl;
         std::cout << "Entrez la dimension de votre kernel pour votre convolutions (nombre impair) :" << std::endl;
-        std::cin >> kernel;
+        std::cin >> withKernel;
     }
     
     for (int x{0}; x < image.width(); x++)//300
@@ -429,8 +429,8 @@ void convolutions (sil::Image image, sil::Image result)
             float red_moy {};
             float blue_moy {};
             float green_moy {};
-            for(int n{x-kernel/2} ; n<=x+kernel/2; n++){
-                for(int z{y-kernel/2} ; z<=y+kernel/2; z++){
+            for(int n{x-withKernel/2} ; n<=x+withKernel/2; n++){
+                for(int z{y-withKernel/2} ; z<=y+withKernel/2; z++){
                     if(n>=0 && n<image.width() && z>=0 && z<image.height()){
                         red_moy += image.pixel(n,z).r;
                         blue_moy += image.pixel(n,z).b;
@@ -438,9 +438,9 @@ void convolutions (sil::Image image, sil::Image result)
                     }
                 }
             }
-            result.pixel(x,y).r = red_moy/(static_cast<float>(kernel)*static_cast<float>(kernel));
-            result.pixel(x,y).b = blue_moy/(static_cast<float>(kernel)*static_cast<float>(kernel));
-            result.pixel(x,y).g = green_moy/(static_cast<float>(kernel)*static_cast<float>(kernel));
+            result.pixel(x,y).r = red_moy/(static_cast<float>(withKernel)*static_cast<float>(withKernel));
+            result.pixel(x,y).b = blue_moy/(static_cast<float>(withKernel)*static_cast<float>(withKernel));
+            result.pixel(x,y).g = green_moy/(static_cast<float>(withKernel)*static_cast<float>(withKernel));
 
         }
     }
@@ -472,7 +472,7 @@ void algoGeneriqueDeConvolution(std::vector<std::vector<float>> kernel, int lign
                             red_moy += image.pixel(n,z).r*kernel[indiceLigneMatrice][indiceColonneMatrice];
                             blue_moy += image.pixel(n,z).b*kernel[indiceLigneMatrice][indiceColonneMatrice];
                             green_moy += image.pixel(n,z).g*kernel[indiceLigneMatrice][indiceColonneMatrice];
-                            // indiceLigneMatrice --;
+                            indiceLigneMatrice --;
                         }
                     }
                     indiceColonneMatrice ++;
@@ -490,7 +490,7 @@ void algoGeneriqueDeConvolution(std::vector<std::vector<float>> kernel, int lign
             }
         }
     }else{
-        std::cout << "Probleme : convolution ne peut etre appliquer sur une matrice de ce format.";
+        std::cout << "Probleme : algoGeneriqueDeConvolution ne peut etre appliquer sur une matrice de ce format.";
     }
  
 }
@@ -635,15 +635,14 @@ int main()
     // { 
     //    {
     //     /*CONVOLUTION*/
-    //     std::vector<std::vector<float>> kernel {{1.f/9.f,1.f/9.f,1.f/9.f},{1.f/9.f,1.f/9.f,1.f/9.f},{1.f/9.f,1.f/9.f,1.f/9.f}};
     //     convolutions(logo, blackImageLogo);
     //    }
     //    {
     //     /*AlgoGeneriqueDeConvolution*/
     //     sil::Image logo{"images/logo.png"};
     //     sil::Image blackImageLogo{300, 345};
-    //     std::vector<std::vector<float>> kernel {{-2,-1,0},{-2,-1,0}};   
-    //     algoGeneriqueDeConvolution(kernel,2,3,logo,blackImageLogo);
+    //     std::vector<std::vector<float>> kernel {{-1,-1,-1},{-1,8,-1},{-1,-1,-1}};   
+    //     algoGeneriqueDeConvolution(kernel,3,3,logo,blackImageLogo);
     //     blackImageLogo.save("output/22_algoGeneriqueDeConvolution.png");
     //    }
     //    {
