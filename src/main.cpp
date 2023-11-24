@@ -100,7 +100,7 @@ void mirror2(sil::Image image) /*2e version*/
 
 void noise(sil::Image image) 
 {
-    int noiseLvl = random_int(1, 5000);
+    int noiseLvl = random_int(15000, 20000);
     
     for (int i{0}; i < noiseLvl; i++)
     {
@@ -178,7 +178,7 @@ void brightness(sil::Image image)
         }
         break;
     }
-    image.save("output/10_brightness.png");
+    image.save("output/10_brightnessDarken.png");
 }
 
 void disk(sil::Image image){
