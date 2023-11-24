@@ -559,15 +559,32 @@ void differenceDeGaussiennes (std::vector<std::vector<float>> kernel1, int longu
     result.save("output/24_differenceDeGaussienne.png");
 }
 
+void pixelSorting(sil::Image image)
+{
+    int sortedRowStart {0};
+    int sortedRow {200};
+    int gap{500};
+
+    for (int pxPosition{0}; pxPosition < image.height()*image.width() - image.width(); pxPosition+=image.width())
+    {
+        std::sort(image.pixels().begin() + pxPosition, image.pixels().begin() + pxPosition + image.width(), [](glm::vec3 const& color1, glm::vec3 const& color2)
+        {
+            return ((color1.r + color1.g + color1.b) / 3) < ((color2.r + color2.g + color2.b) / 3);
+        });
+    }
+
+    image.save("output/25_pixelSort.png");
+}
+
 int main()
 {
     sil::Image logo{"images/logo.png"};
     sil::Image photo{"images/photo.jpg"};
     sil::Image lowContrast{"images/photo_faible_contraste.jpg"};
 
-    sil::Image blackRectangle{300, 200};
-    sil::Image blackImagePhoto{500, 500};  //meme format que la photo
-    sil::Image blackImageLogo{300, 345};      //meme format que le logo
+    // sil::Image blackRectangle{300, 200};
+    // sil::Image image_noire{500, 500};  
+    // sil::Image result{300, 345};
 
     // onlyGreen(logo);
     // changeRedBlue(logo);
@@ -678,4 +695,6 @@ int main()
     //     differenceDeGaussiennes(kernel, longueurKernel, tau, photo, blackImagePhoto);
     //    }
     // }
+
+    pixelSorting(logo);
 }
