@@ -566,12 +566,15 @@ void pixelSorting(sil::Image image)
 
     for (int pxPosition{0}; pxPosition < image.height()*image.width(); pxPosition+= sortedRow + gap)
     {
-        std::sort(image.pixels().begin() + pxPosition, image.pixels().begin() + pxPosition + sortedRow, [](glm::vec3 const& color1, glm::vec3 const& color2)
+        if (pxPosition + sortedRow < image.height()*image.width())
         {
-            return ((color1.r + color1.g + color1.b) / 3) < ((color2.r + color2.g + color2.b) / 3);
-        });
-        int gap = random_int(100, 1000);
-        int sortedRow = random_int(20, 200);
+            std::sort(image.pixels().begin() + pxPosition, image.pixels().begin() + pxPosition + sortedRow, [](glm::vec3 const& color1, glm::vec3 const& color2)
+            {
+                return ((color1.r + color1.g + color1.b) / 3) < ((color2.r + color2.g + color2.b) / 3);
+            });
+        }
+        gap = random_int(100, 1000);
+        sortedRow = random_int(20, 200);
     }
     image.save("output/25_pixelSorting.png");
 }
@@ -699,5 +702,5 @@ int main()
     //    }
     // }
 
-    // pixelSorting(logo);
+    pixelSorting(logo);
 }
