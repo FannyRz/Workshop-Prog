@@ -561,7 +561,7 @@ void differenceDeGaussiennes (std::vector<std::vector<float>> kernel1, int longu
 
 void pixelSorting(sil::Image image)
 {
-    int sortedRowStart {0};
+    int pxToSortStart{0};
     int sortedRow {200};
     int gap{500};
 
