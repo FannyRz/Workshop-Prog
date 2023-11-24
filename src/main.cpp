@@ -181,13 +181,13 @@ void brightness(sil::Image image)
     image.save("output/10_brightnessDarken.png");
 }
 
-void disk(sil::Image image){
+void disk(sil::Image image,int centerX, int centerY, int thickness){
     // On passe sur tous les x et tous les y, et on accède au pixel correspondant :
     for (int x{0}; x < image.width(); x++)
     {
         for (int y{0}; y < image.height(); y++)
         {   
-            if(sqrt((x-image.width()/2)*(x-image.width()/2)+(y-image.height()/2)*(y-image.width()/2))<=100){  
+            if(sqrt((x-centerX)*(x-centerX)+(y-centerY)*(y-centerY))<=thickness){  
                 image.pixel(x,y).r = 1.f;
                 image.pixel(x,y).g = 1.f;
                 image.pixel(x,y).b = 1.f;
@@ -197,13 +197,13 @@ void disk(sil::Image image){
     image.save("output/11_disk.png");
 }
 
-void circle (sil::Image & image, int abcisse, int ordonnee, int thickness) {  //coordonnee du centre du cerclee 
+void circle (sil::Image & image, int centerX, int centerY, int thickness) {  //coordonnee du centre du cerclee 
     // On passe sur tous les x et tous les y, et on accède au pixel correspondant :
     for (int x{0}; x < image.width(); x++)//300
     {
         for (int y{0}; y < image.height(); y++)//345
         {   
-            if(sqrt((x-abcisse)*(x-abcisse)+(y-ordonnee)*(y-ordonnee))<=100.f && sqrt((x-abcisse)*(x-abcisse)+(y-ordonnee)*(y-ordonnee))>=100.f-thickness){  //le centre du cercle a pour coordonnees(255,255)
+            if(sqrt((x-centerX)*(x-centerX)+(y-centerY)*(y-centerY))<=100.f && sqrt((x-centerX)*(x-centerX)+(y-centerY)*(y-centerY))>=100.f-thickness){  //le centre du cercle a pour coordonnees(255,255)
                 image.pixel(x,y).r = 1.f;
                 image.pixel(x,y).g = 1.f;
                 image.pixel(x,y).b = 1.f;
@@ -413,12 +413,12 @@ void normalisation(sil::Image image)
 void convolutions (sil::Image image, sil::Image result)
 {
     int kernel {};
-    std::cout << "Entrez la dimension de votre kernel (nombre impair) : " ;
+    std::cout << "Entrez la dimension de votre kernel pour votre convolutions (nombre impair) : " ;
     std::cin >> kernel;
 
     while(kernel%2==0){
         std::cout << "Probleme, vous avez entrez un nombre pair. Veuillez recommencer. " << std::endl;
-        std::cout << "Entrez la dimension de votre kernel (nombre impair) :" << std::endl;
+        std::cout << "Entrez la dimension de votre kernel pour votre convolutions (nombre impair) :" << std::endl;
         std::cin >> kernel;
     }
     
@@ -514,23 +514,23 @@ void filtresSeparables (std::vector<std::vector<float>> kernel, int tailleKernel
     algoGeneriqueDeConvolution(matriceLigne,1,tailleKernel,result2,result);
 }
 
-void differenceDeGaussiennes (std::vector<std::vector<float>> kernel1, int longueurKernel1, float tau, sil::Image image, sil::Image & result){
+void differenceDeGaussiennes (std::vector<std::vector<float>> kernel1, int widthKernel1, float tau, sil::Image image, sil::Image & result){
     sil::Image result1{500, 500};
     sil::Image result2{500, 500};
 
     //creation du kernel2
     std::vector<std::vector<float>> kernel2 {};
-    int longueurKernel2 {longueurKernel1+10};
+    int widthKernel2 {widthKernel1+10};
     std::vector<float> tmp {}; 
-    for(int i{1} ; i<= longueurKernel2 ; i++){
-        for(int j{1} ; j<= longueurKernel2 ; j++){
-            tmp.push_back({1.f/(static_cast<float>(longueurKernel2)*static_cast<float>(longueurKernel2))});
+    for(int i{1} ; i<= widthKernel2 ; i++){
+        for(int j{1} ; j<= widthKernel2 ; j++){
+            tmp.push_back({1.f/(static_cast<float>(widthKernel2)*static_cast<float>(widthKernel2))});
         }
         kernel2.push_back(tmp); 
     }
     
-    filtresSeparables(kernel1,longueurKernel1,image,result1);
-    filtresSeparables(kernel2,longueurKernel2,image,result2);
+    filtresSeparables(kernel1,widthKernel1,image,result1);
+    filtresSeparables(kernel2,widthKernel2,image,result2);
     for (int x{0}; x < image.width(); x++)
     {
         for (int y{0}; y < image.height(); y++)
@@ -582,9 +582,9 @@ int main()
     sil::Image photo{"images/photo.jpg"};
     sil::Image lowContrast{"images/photo_faible_contraste.jpg"};
 
-    // sil::Image blackRectangle{300, 200};
-    // sil::Image image_noire{500, 500};  
-    // sil::Image result{300, 345};
+    sil::Image blackRectangle{300, 200};
+    sil::Image blackImagePhoto{500, 500};     //meme format que la photo
+    sil::Image blackImageLogo{300, 345};      //meme format que le logo
 
     // onlyGreen(logo);
     // changeRedBlue(logo);
@@ -601,8 +601,12 @@ int main()
     // rotation90(logo);
     // RGBSplit(logo, blackImageLogo);
     // brightness(photo);
-    // disk(blackImagePhoto);
-
+    // { /*DISK*/
+    //     float thickness {};
+    //     std::cout << "Entrez le rayon pour votre disque que vous souhaitez :" ;
+    //     std::cin >> thickness;   
+    //     disk(blackImagePhoto, 255, 255, thickness);
+    // }
     // { /*CIRCLE*/
     //     float thickness {};
     //     std::cout << "Entrez l'epaisseur du cercle que vous souhaitez :" ;
@@ -612,7 +616,7 @@ int main()
     // }
     // { /*ROSACE*/
     //     float thickness {};
-    //     std::cout << "Entrez l'epaisseur pour les cercles que vous souhaitez :" ;
+    //     std::cout << "Entrez l'epaisseur pour les cercles de votre rosace que vous souhaitez :" ;
     //     std::cin >> thickness;
     //     sil::Image blackImagePhoto{500, 500};
     //     rosace(blackImagePhoto,thickness);
@@ -652,12 +656,12 @@ int main()
     //     //creation du kernel
     //     std::vector<std::vector<float>> kernel {};
     //     int longueurKernel {};
-    //     std::cout << "Entrez la longueur du kertel que vous souhaitez (nombre impair): " ;
+    //     std::cout << "Entrez la longueur du kertel que vous souhaitez pour votre filtresSeparables(nombre impair): " ;
     //     std::cin >> longueurKernel; 
 
     //     while(longueurKernel%2==0){
     //     std::cout << "Probleme, vous avez entrez un nombre pair. Veuillez recommencer. " << std::endl;
-    //     std::cout << "Entrez la dimension de votre kernel (nombre impair) : " ;
+    //     std::cout << "Entrez la longueur du kertel que vous souhaitez pour votre filtresSeparables(nombre impair) : " ;
     //     std::cin >> longueurKernel;
     //     }
          
@@ -678,12 +682,12 @@ int main()
 
     //     //creation du kernel
     //     std::vector<std::vector<float>> kernel {};
-    //     int longueurKernel {3};
+    //     int widthKernel {3};
          
     //     std::vector<float> tmp {}; 
-    //     for(int i{1} ; i<= longueurKernel ; i++){
-    //        for(int j{1} ; j<= longueurKernel ; j++){
-    //            tmp.push_back({1.f/(static_cast<float>(longueurKernel)*static_cast<float>(longueurKernel))});
+    //     for(int i{1} ; i<= widthKernel ; i++){
+    //        for(int j{1} ; j<= widthKernel ; j++){
+    //            tmp.push_back({1.f/(static_cast<float>(widthKernel)*static_cast<float>(widthKernel))});
     //        }
     //        kernel.push_back(tmp); 
     //     }
@@ -692,9 +696,9 @@ int main()
     //     std::cout << "Veuillez indiquer le tau que vous souhaitez pour votre difference de Gaussienne : ";
     //     std::cin >> tau;
 
-    //     differenceDeGaussiennes(kernel, longueurKernel, tau, photo, blackImagePhoto);
+    //     differenceDeGaussiennes(kernel, widthKernel, tau, photo, blackImagePhoto);
     //    }
     // }
 
-    pixelSorting(logo);
+    // pixelSorting(logo);
 }
