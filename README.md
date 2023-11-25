@@ -2,8 +2,8 @@
 
 ----
 
-# Rapport de la semaine Workshop de programmation et algorithmie
-semaine 20 novembre 2023
+# Rapport de la semaine - Workshop de programmation et algorithmie
+Du 20 au 24 novembre 2023
 **Par Muracciole Lisa et Ruiz Fanny**
 
 ----
@@ -106,18 +106,36 @@ La différence réside dans un "aiguillage" qui va indiquer au programme où pla
 
 ## ⭐⭐⭐ glitch
 ![image](./images/logo.png) ![image](./output/16_glitch.png)
+
+Pour ce programme, j’ai repris le principe de la fonction swap pour échanger un rectangle d’une longueur et hauteur aléatoire avec un autre rectangle de même dimensions pris aléatoirement dans l’image. 
+Je définis donc un point de départ du rectangle en x et en y, un point de départ de l'autre rectangle, puis j'échange chaque pixel en parcourant les x et y avec un *for*. 
+
+Pour que tout ce code se répète plusieurs fois, je l'inclus dans un *for* dont le compteur *repetition* s'arrête à un nombre aléatoire *glitchLvl*, de la même manière que pour *noise*.
+
 ##fractal
 ![image](./images/blackImagePhoto.png) ![image](./output/17_fractal.png)
 ##vortex
 ![image](./images/logo.png) ![image](./output/18_vortex.png)
-##tramage
+
+## ⭐⭐⭐(⭐) tramage
 ![image](./images/photo.jpg) ![image](./output/19_tramage.png)
-##normalisation
-![image](./images/photo_faible_contraste.jpg) ![image](./output/20_normalisation.png) A CHANGER
+Pour ce programme, j'ai d'abord récupéré les données de la matrice de Bayer et le `const int bayer_n = 4` selon le deuxième lien fourni. 
+Ensuite, selon le tutoriel, j'utilise des if et else pour assigner 0 ou 1 à la valeur d'un pixel, selon sa luminosité + une valeur contenue dans la matrice de bayer. Les % sont utilisés pour ne pas sortir de la matrice, cela sert à avoir un peu d'aléatoire au niveau du rendu. 
+Pour parcourir toute l'image, comme pour beaucoup de fonctions, j'inclus le if / else dans deux *for* qui incrémentent x et y jusqu'à la longueur (resp. hauteur) de l'image. 
+
+## ⭐⭐⭐(⭐) normalisation
+![image](./images/photo_faible_contraste.jpg) ![image](./output/20_normalisation.png)
+Pour normalisation, j'ai tout d'abord initialisé mon pixel le plus sombre à 1 et le plus foncé à 0. Ensuite, je parcours l'image pour trouver le pixel le plus foncé de l'image et le plus clair de l'image ( *for* de *for* en x et y, jusque là rien de nouveau).  J'initialise ma valeur *deltaValue*, puis, parcours à nouveau l'image pour appliquer une formule à chaque pixel afin de recalibrer chacune des composantes.
+
 ##convolutions
 ![image](./images/logo.png) ![image](./output/21_convolutions.png)
 ###algoGeneriqueDeConvolutions
 ##filtresSeparables
 ![image](./images/logo.png) ![image](./output/23_filtresSeparables.png)
+
 ##differenceDeGaussienne
 ![image](./images/photo.jpg) ![image](./output/24_differenceDeGaussienne.png)
+
+## ⭐⭐⭐⭐ Tri de pixels
+![image](./images/photo.jpg) ![image](./output/25_pixelSorting)
+Pour ce tri de pixels, j'ai tout d'abord initialisé une longueur de ligne de pixels que je voulais trier, puis l'écart entre ces lignes, aléatoirement. Puis, je parcourt toute mon image en me décalant à chaque fois d'une longueur de ligne + l'écart. Si je ne risque pas de sortir de l'image, le programme trie la rangée, puis assigne une nouvelle valeur aléatoire à l'écart et la longueur de ligne, pour rendre le résultat encore plus aléatoire !

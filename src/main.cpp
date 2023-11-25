@@ -359,7 +359,7 @@ void tramage(sil::Image image)
     {
         for (int y{0}; y < image.height(); y++)
         {
-            if (image.pixel(x, y).r + bayer_matrix_4x4[x % 4][y % 4] > 0.5f)
+            if ((image.pixel(x, y).r + image.pixel(x, y).g + image.pixel(x, y).b) / 3 + bayer_matrix_4x4[x % 4][y % 4] > 0.5f)
             {
                 image.pixel(x, y).r = 1;
                 image.pixel(x, y).g = 1;
@@ -376,9 +376,6 @@ void tramage(sil::Image image)
     
 void normalisation(sil::Image image)
 {
-    sil::Image grayscaledCopy = image;
-    blackAndWhite(grayscaledCopy);
-
     float darkestPixelValue{1.f};
     float brightestPixelValue{0.f};
     
@@ -386,14 +383,14 @@ void normalisation(sil::Image image)
     {
         for (int y{0}; y < image.height(); y++)
         {
-            if (grayscaledCopy.pixel(x, y).r < darkestPixelValue)
+            if ((image.pixel(x, y).r + image.pixel(x, y).g + image.pixel(x, y).b) / 3 < darkestPixelValue)
             {
-                darkestPixelValue = grayscaledCopy.pixel(x, y).r;
+                darkestPixelValue = (image.pixel(x, y).r + image.pixel(x, y).g + image.pixel(x, y).b) / 3;
             }
             
-            else if (grayscaledCopy.pixel(x, y).r > brightestPixelValue)
+            else if ((image.pixel(x, y).r + image.pixel(x, y).g + image.pixel(x, y).b) / 3 > brightestPixelValue)
             {
-                brightestPixelValue = grayscaledCopy.pixel(x, y).r;
+                brightestPixelValue = (image.pixel(x, y).r + image.pixel(x, y).g + image.pixel(x, y).b) / 3;
             }
         }
     }
@@ -587,9 +584,9 @@ int main()
     sil::Image photo{"images/photo.jpg"};
     sil::Image lowContrast{"images/photo_faible_contraste.jpg"};
 
-    sil::Image blackRectangle{300, 200};
-    sil::Image blackImagePhoto{500, 500};     //meme format que la photo
-    sil::Image blackImageLogo{300, 345};      //meme format que le logo
+    // sil::Image blackRectangle{300, 200};
+    // sil::Image blackImagePhoto{500, 500};     //meme format que la photo
+    // sil::Image blackImageLogo{300, 345};      //meme format que le logo
 
     // onlyGreen(logo);
     // changeRedBlue(logo);
