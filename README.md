@@ -50,10 +50,6 @@ Nous n'avons pas sû comment s'en servir directement car nous ne comprenions pas
 **Explication**
 On parcourt seulement la partie gauche de l'image qu'on a divisé à la moitié de la longueur de l'image. Puis, on inverse la couleur deux à deux des pixels qui sont symétriques par rapport à l'axe du milieu.
 
-### *mirror2*
-**Explication**
-On parcourt seulement la partie gauche de l'image qu'on a divisé à la moitié de la longueur de l'image. Puis, on inverse la couleur deux à deux des pixels qui sont symétriques par rapport à l'axe du milieu.
-
 ## ⭐⭐ noise
 ![image](./images/logo.png) ![image](./output/07_noise.png)
 **Explication**
@@ -125,12 +121,12 @@ Pour ce faire, on parcourt tous les pixels de l'image et pour chaque pixel, on r
 Nous avons commencé par tracer le cercle ayant pour origine la milieu de l'image en utilisant la fonction **circle**. Ensuite, nous avons utilisé une boucle *for* allant de 1 à 6 afin de tracer à chaque itération l'un des 6 cercles autour du cercle central.   
 
 **❗La difficulté❗**
-Le point le plus difficile de cette fonction a été de savoir à l'avance les coordonnées des origines de chacun de ces 6 cercles. En regardant de plus près, on se rend compte que chaque origine correspond à un multiple de $$\frac{2\pi}{6}$$ Ainsi, l'abcisse de ces origines correspondent à `cos(i*((2*pi)/6))` et les ordonnées correspondent à `sin(i*((2*pi)/6)` avec i allant de 1 à 6. Enfin, il reste à convertir ces coordonnées polaires en coordonnées cartésiennes. Pour ce faire, on utilise ces formules :   
+Le point le plus difficile de cette fonction a été de savoir à l'avance les coordonnées des origines de chacun de ces 6 cercles. En regardant de plus près, on se rend compte que chaque origine correspond à un multiple de $$\frac{2\pi}{6}$$ Ainsi, l’abscisse de ces origines correspondent à `cos(i*((2*pi)/6))` et les ordonnées correspondent à `sin(i*((2*pi)/6)` avec i allant de 1 à 6. Enfin, il reste à convertir ces coordonnées polaires en coordonnées cartésiennes. Pour ce faire, on utilise ces formules :   
 
 $$\text{Coordonnées polaires (r, θ) → Coordonnées cartésiennes }(x, y) :
 $$ $$x = r × cos (θ)$$  $$y = r × sin (θ)$$
 Et comme nous avons pris 100 comme rayon on obtient donc `image.width()/2 + 100*cos(i*((2*pi)/6))` et `image.height()/2 + 100*sin(i*((2*pi)/6))`.
-Le `image.width()/2` et le `image.heigth()/2` permettent de se placer au milieu de l'image avant de rajouter les coordonnées cartésiennes.
+Le `image.width()/2` et le `image.height()/2` permettent de se placer au milieu de l'image avant de rajouter les coordonnées cartésiennes.
 
 ## ⭐⭐ mosaic
 ![image](./images/logo.png) ![image](./output/14_mosaic.png)
@@ -189,7 +185,7 @@ Finalement, en fonction de la valeur du compteur, la couleur du pixel varie. Si 
 ![image](./images/logo.png) ![image](./output/18_vortex.png)
 **Explication**
 On parcourt tous les pixels de l'image et pour chacun on calcule sa distance avec le milieu de l'image avec la même formule utilisée dans **disk**. Puis on applique la fonction **rotated**, donné dans l'énoncé, à chaque pixel en calculant l'angle de rotation en fonction de sa distance pour pouvoir permettre d'avoir une rotation de plus en plus importante au fur et à mesure que l'on s'éloigne du centre.
-Enfin, il nous reste juste à vérifier que les nouvelles coordonnées du point (x,y) que nous renvoie la fonction **rotated** ne correspond pas un point situé en dehors de l'image avant de modifier l'image *résult*.
+Enfin, il nous reste juste à vérifier que les nouvelles coordonnées du point (x,y) que nous renvoie la fonction **rotated** ne correspond pas un point situé en dehors de l'image avant de modifier l'image *result*.
 
 ## ⭐⭐⭐(⭐) tramage
 ![image](./images/photo.jpg) ![image](./output/19_tramage.png)

@@ -130,13 +130,13 @@ void RGBSplit(sil::Image image, sil::Image result)
     {
         for (int y{0}; y < image.height(); y++)
         {
-            if (x<30){  // pour gerer les premieres colonnes
+            if (x<30){  // pour gérer les premieres colonnes
                 result.pixel(x,y).r = image.pixel(0,y).r;
             }else{
                 result.pixel(x,y).r = image.pixel(x-30,y).r;
             }
 
-            if (x>image.width()-31){  //pour gerer les dernieres colonnes
+            if (x>image.width()-31){  //pour gérer les dernières colonnes
                 result.pixel(x,y).b = image.pixel(299,y).b;
             }else{
                 result.pixel(x,y).b = image.pixel(x+30,y).b;
@@ -177,7 +177,7 @@ void brightness(sil::Image image)
     }
 }
 
-void disk(sil::Image image,int centerX, int centerY, int thickness){ //coordonnees du centre du cercle
+void disk(sil::Image image,int centerX, int centerY, int thickness){ //coordonnées du centre du cercle
     // On passe sur tous les x et tous les y, et on accède au pixel correspondant :
     for (int x{0}; x < image.width(); x++)
     {
@@ -193,7 +193,7 @@ void disk(sil::Image image,int centerX, int centerY, int thickness){ //coordonne
     image.save("output/11_disk.png");
 }
 
-void circle (sil::Image & image, int centerX, int centerY, int thickness) {  //coordonnees du centre du cercle 
+void circle (sil::Image & image, int centerX, int centerY, int thickness) {  //coordonnées du centre du cercle 
     // On passe sur tous les x et tous les y, et on accède au pixel correspondant :
     for (int x{0}; x < image.width(); x++)
     {
@@ -411,7 +411,7 @@ void convolutions (sil::Image image, sil::Image result)
     std::cin >> widthKernel;
 
     while(widthKernel%2==0){
-        std::cout << "Probleme, vous avez entrez un nombre pair. Veuillez recommencer. " << std::endl;
+        std::cout << "Vous avez entrez un nombre pair. Veuillez recommencer :" << std::endl;
         std::cout << "Entrez la longueur de votre kernel pour votre convolutions (nombre impair) :" << std::endl;
         std::cin >> widthKernel;
     }
@@ -484,7 +484,7 @@ void algoGeneriqueDeConvolution(std::vector<std::vector<float>> kernel, int lign
             }
         }
     }else{
-        std::cout << "Probleme : algoGeneriqueDeConvolution ne peut etre appliquer sur une matrice de ce format.";
+        std::cout << "Probleme : algoGeneriqueDeConvolution ne peut etre applique sur une matrice de ce format.";
     }
  
 }
@@ -655,12 +655,12 @@ int main()
         //creation du kernel
         std::vector<std::vector<float>> kernel {};
         int longueurKernel {};
-        std::cout << "Entrez la longueur du kertel que vous souhaitez pour votre filtresSeparables(nombre impair): " ;
+        std::cout << "Entrez la longueur du kernel que vous souhaitez pour votre filtresSeparables(nombre impair): " ;
         std::cin >> longueurKernel; 
 
         while(longueurKernel%2==0){
         std::cout << "Probleme, vous avez entrez un nombre pair. Veuillez recommencer. " << std::endl;
-        std::cout << "Entrez la longueur du kertel que vous souhaitez pour votre filtresSeparables(nombre impair) : " ;
+        std::cout << "Entrez la longueur du kernel que vous souhaitez pour votre filtresSeparables(nombre impair) : " ;
         std::cin >> longueurKernel;
         }
          
