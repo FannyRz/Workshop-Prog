@@ -58,11 +58,6 @@ void gradient(sil::Image image)
         for (int x{0}; x < image.width(); x++)
         {
             image.pixel(x, y) += x / (image.width() - 1.0);
-
-            /* Autre façon de faire, en utilisant la valeur précédente en incrémentant :
-            image.pixel(x, y).r += image.pixel(x-1, 0).r + 1.f/(image.width() -1);
-            Attention : faire démarrer x à 1 et conv la division en float
-            y = 0 car on s'en fiche de la ligne ici */
         }
     }
     image.save("output/05_gradient.png");
