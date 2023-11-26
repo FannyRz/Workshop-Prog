@@ -90,7 +90,7 @@ Pour ce programme, il fallait :
 - Mettre au carré les valeurs du vert, rouge et bleu s'il on voulait assombrir l'image;
 - Prendre la fonction symétrique a x² par rapport à f(x) = x, soit racine carrée, et l'appliquer à chaque pixel de l'image s'il on voulait l'éclaircir.
 
-C'est pourquoi j'ai utilisé un *for* pour changer les trois composantes de chaque pixel et un *switch* qui demande à l'utilisateur une valeur selon son choix (assombrir / éclaircir).
+C'est pourquoi un *for* pour changer les trois composantes de chaque pixel et un *switch* qui demande à l'utilisateur une valeur selon son choix (assombrir / éclaircir) sont utilisés.
 
 ## ⭐⭐ disk
 ![image](./images/blackImagePhoto.png) ![image](./output/11_disk.png)
@@ -104,11 +104,11 @@ C'est pourquoi j'ai utilisé un *for* pour changer les trois composantes de chaq
 ## ⭐⭐ mosaic
 ![image](./images/logo.png) ![image](./output/14_mosaic.png)
 **Explication**
-Pour ce programme, je commence par créer un canvas de 5 fois la hauteur et 5 fois la largeur (car on veut répliquer 5*5 fois l'image, cependant on pourrait aussi mettre n'importe quel entier).
+Pour ce programme, on commence par créer un canvas de 5 fois la hauteur et 5 fois la largeur (car on veut répliquer 5*5 fois l'image, cependant on pourrait aussi mettre n'importe quel entier).
 
-Puis, je parcours l'image d'entrée sur les x et y avec deux *for*. Ces deux for sont implémentés dans deux autres *for* qui vont eux parcourir les colonnes et lignes de la mosaïque (une colonne = une hauteur d'image et une ligne = une longueur d'image, il y en a donc 5 de chaque). 
+Puis, on parcourt l'image d'entrée sur les x et y avec deux *for*. Ces deux for sont implémentés dans deux autres *for* qui vont eux parcourir les colonnes et lignes de la mosaïque (une colonne = une hauteur d'image et une ligne = une longueur d'image, il y en a donc 5 de chaque). 
 
-Avec ces quatres *for* imbriqués, j'assigne la valeur d'un pixel de l'image d'entrée à la position x et y à un pixel du canvas d'une une ligne et une colonne donnée, à la position x et y. 
+Avec ces quatres *for* imbriqués, on assigne la valeur d'un pixel de l'image d'entrée à la position x et y à un pixel du canvas d'une une ligne et une colonne donnée, à la position x et y. 
 L'image se réplique alors à l'identique sur chaque ligne et chaque colonne.
 
 **NB :** au départ, mosaicCanvasRow se nommait mosaicCanvasX, le *for* était écrit ainsi
@@ -119,7 +119,7 @@ for (int mosaicCanvasX{0}; mosaicCanvasX < 5*image.width(); mosaicCanvasX+=image
 
 (et idem pour les colonnes).
 
-Or, pour le programme *mirrorMosaic*, cela m'a fortement mis des bâton dans les roues car à chaque tour, la valeur mosaicCanvasX tombait sur une valeur paire, ce qui empêchait l'impression des miroirs horizontaux. J'ai donc utilisé le code qu'il y a actuellement pour *mirrorMosaic*, et l'ai plus tard ré-implémenté dans *mosaic* histoire d'harmoniser le tout, optimiser le programme et montrer les ressemblances entre les deux.
+Or, pour le programme *mirrorMosaic*, cela a fortement mis des bâton dans les roues car à chaque tour, la valeur mosaicCanvasX tombait sur une valeur paire, ce qui empêchait l'impression des miroirs horizontaux. On a donc utilisé le code qu'il y a actuellement pour *mirrorMosaic*, et plus tard ré-implémenté dans *mosaic* histoire d'harmoniser le tout, optimiser le programme et montrer les ressemblances entre les deux.
 
 ## ⭐⭐⭐ mirrorMosaic
 ![image](./images/logo.png) ![image](./output/15_mirrorMosaic.png)
@@ -127,15 +127,15 @@ Or, pour le programme *mirrorMosaic*, cela m'a fortement mis des bâton dans les
 Pour ce programme, on réutilise le même principe que *mosaic*. 
 La différence réside dans un "aiguillage" qui va indiquer au programme où placer son curseur de départ avant de lire et recopier l'image d'entrée. Cela influe sur le sens de l'image recopiée dans la case du canvas.
 
-**NB :** J'ai essayé au début d'utiliser à nouveau *reverse*, pour inverser chaque ligne paire puis chaque colonne paire, sans succès. Cependant, j'ai vu plus tard que l'on pouvait définir un miroir horizontal, vertical et double (en appliquant plusieurs fois *reverse* ou en modifiant *mirror1*), puis l'appeler en fonction du numéro de colonne et de ligne.
+**NB :** Au début, on a essayé d'utiliser à nouveau *reverse*, pour inverser chaque ligne paire puis chaque colonne paire, sans succès. Cependant, on a su plus tard que l'on pouvait définir un miroir horizontal, vertical et double (en appliquant plusieurs fois *reverse* ou en modifiant *mirror1*), puis l'appeler en fonction du numéro de colonne et de ligne.
 
 ## ⭐⭐⭐ glitch
 ![image](./images/logo.png) ![image](./output/16_glitch.png)
 **Explication**
-Pour ce programme, j’ai repris le principe de la fonction swap pour échanger un rectangle d’une longueur et hauteur aléatoire avec un autre rectangle de même dimensions pris aléatoirement dans l’image. 
-Je définis donc un point de départ du rectangle en x et en y, un point de départ de l'autre rectangle, puis j'échange chaque pixel en parcourant les x et y avec un *for*. 
+Ce programme reprend le principe de la fonction swap pour échanger un rectangle d’une longueur et hauteur aléatoire avec un autre rectangle de même dimensions pris aléatoirement dans l’image. 
+On définit donc un point de départ du rectangle en x et en y, un point de départ de l'autre rectangle, puis on échange chaque pixel en parcourant les x et y avec un *for*. 
 
-Pour que tout ce code se répète plusieurs fois, je l'inclus dans un *for* dont le compteur *repetition* s'arrête à un nombre aléatoire *glitchLvl*, de la même manière que pour *noise*.
+Pour que tout ce code se répète plusieurs fois, on l'inclut dans un *for* dont le compteur *repetition* s'arrête à un nombre aléatoire *glitchLvl*, de la même manière que pour *noise*.
 
 ## ⭐⭐⭐ fractal
 ![image](./images/blackImagePhoto.png) ![image](./output/17_fractal.png)
