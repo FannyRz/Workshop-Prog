@@ -2,13 +2,13 @@
 
 ----
 
-# Rapport de la semaine - Workshop de programmation et algorithmie
+# 💨 Rapport de la semaine - Workshop de programmation et algorithmie 💨
 Du 20 au 24 novembre 2023
 **Par Muracciole Lisa et Ruiz Fanny**
 
 ----
 
-## ⭐ OnlyGreen
+## ⭐ onlyGreen
 ![image](./images/logo.png) ![image](./output/01_onlyGreen.png)
 
 ## ⭐ changeRedBlue
@@ -16,9 +16,13 @@ Du 20 au 24 novembre 2023
 
 ## ⭐ blackAndWhite
 ![image](./images/logo.png) ![image](./output/03_blackAndWhite.png)
+**Explication**
+Nous avons fait la moyenne des trois couleurs de chaque pixel.
 
 ## ⭐negative
 ![image](./images/logo.png) ![image](./output/04_negative.png)
+**Explication**
+Nous avons pris le complément à un des trois couleurs de chaque pixel.
 
 ## ⭐ gradient
 ![image](./images/blackRectangle.png) ![image](./output/05_gradient.png)
@@ -27,17 +31,20 @@ Du 20 au 24 novembre 2023
 ![image](./images/logo.png) ![image](./output/06_mirror1.png)
 
 ### *mirror1*
-
-### *mirror2*
+**Explication**
 Pour ce programme, j'ai choisi d'utiliser la fonction *reverse* (de la librairie *algorithm*), qui permet d'inverser les tableaux (le premier élément devient le dernier, et ainsi de suite).
 
 J'en avait entendu parler en TD et je me suis dit que cela pouvait s'avérer utile, du fait qu'une image est considérée comme un tableau. Je me suis dit que c'était également une bonne occasion de me familiariser avec.
 
 Je n'ai pas sû m'en servir directement car je ne comprenais pas ce que signifiait myvector.begin() dans la documentation (je pensais que c'était spécifique à l'exemple). Puis, j'ai cru que simplement utiliser reverse sur toute l'image pouvait fonctionner. Or, il fallait le faire ligne par ligne pour avoir un résultat en miroir horizontal, d'où le fait que j'ai ajouté un *for* qui s'incrémente d'une longueur de ligne. 
 
+### *mirror2*
+**Explication**
+On parcourt seulement la partie gauche de l'image qu'on a divisé à la moitié de la longueur de l'image. Puis, on inverse la couleur deux à deux des pixels qui sont symétriques par rapport à l'axe du milieu.
+
 ## ⭐⭐ noise
 ![image](./images/logo.png) ![image](./output/07_noise.png)
-
+**Explication**
 Pour ce programme, j'ai d'abord scruté l'indice : *"Remplacez quelques pixels au hasard par une couleur aléatoire"*.
 
 Il fallait donc :
@@ -53,15 +60,21 @@ Pour répéter cette opération un grand nombre de fois, j'ai inclus ce bout de 
 A la v1, le programme demandait le niveau de bruit (`noiseLvl`) à l'utilisateur, à l'aide d'un `std::cin`. 
 Puis, pour que les tests successifs soient plus rapides, j'ai décidé d'initialiser la valeur de `noiseLvl` de façon aléatoire.
 
-##rotation90
+## ⭐⭐ rotation90
 ![image](./images/logo.png) ![image](./output/08_rotation90.png)
-##RBGSplit
+**Explication**
+On créé une image ayant pour format la longueur du logo en hauteur et inversement. Pour chaque pixel du logo, on le place sur le canvas par des calculs génériques.
+**❗Problèmes❗**
+
+
+
+## ⭐⭐ RBGSplit
 ![image](./images/logo.png) ![image](./output/09_RGBSplit.png)
 
 ## ⭐⭐ brightness
 ![image](./images/photo.jpg) 
 ![image](./output/10_brightnessLighten.png) ![image](./output/10_brightnessDarken.png)
-
+**Explication**
 Pour ce programme, il fallait :
 
 - Mettre au carré les valeurs du vert, rouge et bleu s'il on voulait assombrir l'image;
@@ -69,16 +82,18 @@ Pour ce programme, il fallait :
 
 C'est pourquoi j'ai utilisé un *for* pour changer les trois composantes de chaque pixel et un *switch* qui demande à l'utilisateur une valeur selon son choix (assombrir / éclaircir).
 
-##disk
+## ⭐⭐ disk
 ![image](./images/blackImagePhoto.png) ![image](./output/11_disk.png)
-##circle
+
+## ⭐ circle
 ![image](./images/blackImagePhoto.png) ![image](./output/12_circle.png)
-##rosace
+
+## ⭐⭐⭐ rosace
 ![image](./images/blackImagePhoto.png) ![image](./output/13_rosace.png)
 
 ## ⭐⭐ mosaic
 ![image](./images/logo.png) ![image](./output/14_mosaic.png)
-
+**Explication**
 Pour ce programme, je commence par créer un canvas de 5 fois la hauteur et 5 fois la largeur (car on veut répliquer 5*5 fois l'image, cependant on pourrait aussi mettre n'importe quel entier).
 
 Puis, je parcours l'image d'entrée sur les x et y avec deux *for*. Ces deux for sont implémentés dans deux autres *for* qui vont eux parcourir les colonnes et lignes de la mosaïque (une colonne = une hauteur d'image et une ligne = une longueur d'image, il y en a donc 5 de chaque). 
@@ -98,7 +113,7 @@ Or, pour le programme *mirrorMosaic*, cela m'a fortement mis des bâton dans les
 
 ## ⭐⭐⭐ mirrorMosaic
 ![image](./images/logo.png) ![image](./output/15_mirrorMosaic.png)
-
+**Explication**
 Pour ce programme, on réutilise le même principe que *mosaic*. 
 La différence réside dans un "aiguillage" qui va indiquer au programme où placer son curseur de départ avant de lire et recopier l'image d'entrée. Cela influe sur le sens de l'image recopiée dans la case du canvas.
 
@@ -106,36 +121,42 @@ La différence réside dans un "aiguillage" qui va indiquer au programme où pla
 
 ## ⭐⭐⭐ glitch
 ![image](./images/logo.png) ![image](./output/16_glitch.png)
-
+**Explication**
 Pour ce programme, j’ai repris le principe de la fonction swap pour échanger un rectangle d’une longueur et hauteur aléatoire avec un autre rectangle de même dimensions pris aléatoirement dans l’image. 
 Je définis donc un point de départ du rectangle en x et en y, un point de départ de l'autre rectangle, puis j'échange chaque pixel en parcourant les x et y avec un *for*. 
 
 Pour que tout ce code se répète plusieurs fois, je l'inclus dans un *for* dont le compteur *repetition* s'arrête à un nombre aléatoire *glitchLvl*, de la même manière que pour *noise*.
 
-##fractal
+## ⭐⭐⭐ fractal
 ![image](./images/blackImagePhoto.png) ![image](./output/17_fractal.png)
-##vortex
+
+## ⭐⭐⭐(⭐) vortex
 ![image](./images/logo.png) ![image](./output/18_vortex.png)
 
 ## ⭐⭐⭐(⭐) tramage
 ![image](./images/photo.jpg) ![image](./output/19_tramage.png)
+**Explication**
 Pour ce programme, j'ai d'abord récupéré les données de la matrice de Bayer et le `const int bayer_n = 4` selon le deuxième lien fourni. 
 Ensuite, selon le tutoriel, j'utilise des if et else pour assigner 0 ou 1 à la valeur d'un pixel, selon sa luminosité + une valeur contenue dans la matrice de bayer. Les % sont utilisés pour ne pas sortir de la matrice, cela sert à avoir un peu d'aléatoire au niveau du rendu. 
 Pour parcourir toute l'image, comme pour beaucoup de fonctions, j'inclus le if / else dans deux *for* qui incrémentent x et y jusqu'à la longueur (resp. hauteur) de l'image. 
 
 ## ⭐⭐⭐(⭐) normalisation
 ![image](./images/photo_faible_contraste.jpg) ![image](./output/20_normalisation.png)
+**Explication**
 Pour normalisation, j'ai tout d'abord initialisé mon pixel le plus sombre à 1 et le plus foncé à 0. Ensuite, je parcours l'image pour trouver le pixel le plus foncé de l'image et le plus clair de l'image ( *for* de *for* en x et y, jusque là rien de nouveau).  J'initialise ma valeur *deltaValue*, puis, parcours à nouveau l'image pour appliquer une formule à chaque pixel afin de recalibrer chacune des composantes.
 
-##convolutions
+## ⭐⭐⭐⭐ convolutions
 ![image](./images/logo.png) ![image](./output/21_convolutions.png)
-###algoGeneriqueDeConvolutions
-##filtresSeparables
+
+### ⭐⭐⭐⭐ algoGeneriqueDeConvolutions
+
+## ⭐⭐ filtresSeparables
 ![image](./images/logo.png) ![image](./output/23_filtresSeparables.png)
 
-##differenceDeGaussienne
+## ⭐⭐ differenceDeGaussienne
 ![image](./images/photo.jpg) ![image](./output/24_differenceDeGaussienne.png)
 
-## ⭐⭐⭐⭐ Tri de pixels
-![image](./images/photo.jpg) ![image](./output/25_pixelSorting)
+## ⭐⭐⭐⭐ pixelSorting
+![image](./images/logo.png) ![image](./output/25_pixelSorting.png)
+**Explication**
 Pour ce tri de pixels, j'ai tout d'abord initialisé une longueur de ligne de pixels que je voulais trier, puis l'écart entre ces lignes, aléatoirement. Puis, je parcourt toute mon image en me décalant à chaque fois d'une longueur de ligne + l'écart. Si je ne risque pas de sortir de l'image, le programme trie la rangée, puis assigne une nouvelle valeur aléatoire à l'écart et la longueur de ligne, pour rendre le résultat encore plus aléatoire !
