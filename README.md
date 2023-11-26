@@ -50,10 +50,6 @@ Nous n'avons pas sû comment s'en servir directement car nous ne comprenions pas
 **Explication**
 On parcourt seulement la partie gauche de l'image qu'on a divisé à la moitié de la longueur de l'image. Puis, on inverse la couleur deux à deux des pixels qui sont symétriques par rapport à l'axe du milieu.
 
-### *mirror2*
-**Explication**
-On parcourt seulement la partie gauche de l'image qu'on a divisé à la moitié de la longueur de l'image. Puis, on inverse la couleur deux à deux des pixels qui sont symétriques par rapport à l'axe du milieu.
-
 ## ⭐⭐ noise
 ![image](./images/logo.png) ![image](./output/07_noise.png)
 **Explication**
@@ -85,7 +81,7 @@ Au début, le logo tournait de 90 degré dans l'autre sens, ce qui signifie que 
 ## ⭐⭐ RBGSplit
 ![image](./images/logo.png) ![image](./output/09_RGBSplit.png)
 **Explication**
-On parcourt tous les pixels de notre image.Puis pour chaque pixel nous prenons la couleur rouge du pixel situé 30 pixels à sa droite, son propre vert et le bleu du pixel situé 30 pixels à sa gauche. Le choix du chiffre 30 est totalement arbitraire, nous pouvons prendre n'importe quelle valeur en pratique.   
+On parcourt tous les pixels de notre image. Puis pour chaque pixel nous prenons la couleur rouge du pixel situé 30 pixels à sa droite, son propre vert et le bleu du pixel situé 30 pixels à sa gauche. Le choix du chiffre 30 est totalement arbitraire, nous pouvons prendre n'importe quelle valeur en pratique.   
 
 **❗Attention❗**
 Il faut faire attention au cas des 30 premières et dernières colonnes de notre image. En effet, pour éviter un débordement de l'image lors de `image.pixel(x-30,y)` et `image.pixel(x+30,y)` il faut gérer ces 2 cas d'une autre manière. 
