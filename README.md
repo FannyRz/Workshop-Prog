@@ -17,28 +17,34 @@ Du 20 au 24 novembre 2023
 ## ⭐ blackAndWhite
 ![image](./images/logo.png) ![image](./output/03_blackAndWhite.png)
 **Explication**
-Nous avons fait la moyenne des trois couleurs de chaque pixel.
+Pour ce programme, le principe était de faire la moyenne des trois couleurs de chaque pixel et de réappliquer cette moyenne à chacune des trois couleurs : elles s'équilibrent et donnent du gris.
 
 ## ⭐negative
 ![image](./images/logo.png) ![image](./output/04_negative.png)
 **Explication**
-Nous avons pris le complément à un des trois couleurs de chaque pixel.
+Nous avons pris le complément à 1 des trois couleurs de chaque pixel.
 
 ## ⭐ gradient
 ![image](./images/blackRectangle.png) ![image](./output/05_gradient.png)
 **Explication**
-Nous avons parcouru tous les pixels de notre image noire et en fonction de son abcisse, nous avons augmenter la quantité des 3 couleurs afin d'avoir un blanc de plus en plus prononcé.
+Le principe est de parcourir l'image sur les lignes et colonnes et "d'éclaircir" chaque pixel au fur et à mesure que x augmente.
+
+**NB :** Une autre façon de faire : utiliser la valeur précédente en incrémentant (en faisant attention à faire démarrer x à 1).
+
+```cpp
+image.pixel(x, y).r += image.pixel(x-1, 0).r + 1.f/(image.width() -1);
+```
 
 ## ⭐⭐ mirror
 ![image](./images/logo.png) ![image](./output/06_mirror1.png)
 
 ### *mirror1*
 **Explication**
-Pour ce programme, nous avons choisi d'utiliser la fonction *reverse* (de la librairie *algorithm*), qui permet d'inverser les tableaux (le premier élément devient le dernier, et ainsi de suite).
+Pour ce programme, il s'agit d'utiliser la fonction *reverse* (de la librairie *algorithm*), qui permet d'inverser les tableaux (le premier élément devient le dernier, et ainsi de suite).
 
-Nous en avions avait entendu parler en TD et nous nous sommes dit que cela pouvait s'avérer utile, du fait qu'une image est considérée comme un tableau. Nous nous sommes dit que c'était également une bonne occasion de me familiariser avec.
+Nous en avions entendu parler en TD et nous nous sommes dit que cela pouvait s'avérer utile, du fait qu'une image est considérée comme un tableau. C'était également une bonne occasion de se familiariser avec.
 
-Nus n'avons pas su nous en servir directement car nous ne comprenions pas ce que signifiait myvector.begin() dans la documentation (nous pensions que c'était spécifique à l'exemple). Puis, nous avons cru que simplement utiliser reverse sur toute l'image pouvait fonctionner. Or, il fallait le faire ligne par ligne pour avoir un résultat en miroir horizontal, d'où le fait que nous avons ajouté un *for* qui s'incrémente d'une longueur de ligne. 
+Nous n'avons pas sû comment s'en servir directement car nous ne comprenions pas ce que signifiait myvector.begin() dans la documentation (on pensait que c'était spécifique à l'exemple). Puis, on a cru que simplement utiliser reverse sur toute l'image pouvait fonctionner. Or, il fallait le faire ligne par ligne pour avoir un résultat en miroir horizontal, d'où l'ajout d'un *for* qui s'incrémente d'une longueur de ligne. 
 
 ### *mirror2*
 **Explication**
@@ -51,7 +57,7 @@ On parcourt seulement la partie gauche de l'image qu'on a divisé à la moitié 
 ## ⭐⭐ noise
 ![image](./images/logo.png) ![image](./output/07_noise.png)
 **Explication**
-Pour ce programme, nous avons d'abord scruté l'indice : *"Remplacez quelques pixels au hasard par une couleur aléatoire"*.
+Pour ce programme, il fallait d'abord scruter l'indice : *"Remplacez quelques pixels au hasard par une couleur aléatoire"*.
 
 Il fallait donc :
 - Indiquer à la machine des coordonnées aléatoires pour un pixel, c'est-à-dire x et y aléatoires;
@@ -62,17 +68,19 @@ Ainsi,
 
 `image.pixel(x, y).r = random_float(0, 1);)` applique une valeur aléatoire au niveau de rouge (on fait de même pour le niveau de vert et de bleu).
 
-Pour répéter cette opération un grand nombre de fois, nous avons inclus ce bout de code dans un *for*. 
+Pour répéter cette opération un grand nombre de fois, on inclus ce bout de code dans un *for*. 
+
 A la v1, le programme demandait le niveau de bruit (`noiseLvl`) à l'utilisateur, à l'aide d'un `std::cin`. 
-Puis, pour que les tests successifs soient plus rapides, nous avons décidé d'initialiser la valeur de `noiseLvl` de façon aléatoire.
+Puis, pour que les tests successifs soient plus rapides, on initialise la valeur de `noiseLvl` de façon aléatoire.
 
 ## ⭐⭐ rotation90
 ![image](./images/logo.png) ![image](./output/08_rotation90.png)
 **Explication**
-On créé une image ayant pour format la longueur du logo en hauteur et la hauteur du logo en largeur. Pour chaque pixel du logo, on le place sur le canvas par une opération trouvée : `newImageRotation90.pixel(image.height() - 1 - y, x) = image.pixel(x, y);)` .   
+On créé une image ayant pour format la longueur du logo en hauteur et inversement. Pour chaque pixel du logo, on le place sur le canvas par des calculs génériques.
 
 **❗Problèmes❗**
 Au début, le logo tournait de 90 degré dans l'autre sens, ce qui signifie que l'écriture IMAC se retrouvait à gauche de l'image et non à droit comme nous le voulions. Ceci s'explique par le fait que nous ne savions pas que l'origine du repère (0,0) est placé non pas en haut à gauche de l'image mais bien en bas à gauche de l'image, tel un repère orthonormé en maths.
+
 
 ## ⭐⭐ RBGSplit
 ![image](./images/logo.png) ![image](./output/09_RGBSplit.png)
@@ -142,7 +150,7 @@ for (int mosaicCanvasX{0}; mosaicCanvasX < 5*image.width(); mosaicCanvasX+=image
 
 (et idem pour les colonnes).
 
-Or, pour le programme *mirrorMosaic*, cela m'a fortement mis des bâton dans les roues car à chaque tour, la valeur mosaicCanvasX tombait sur une valeur paire, ce qui empêchait l'impression des miroirs horizontaux. Nons avons donc utilisé le code qu'il y a actuellement pour *mirrorMosaic*, et l'ai plus tard ré-implémenté dans *mosaic* histoire d'harmoniser le tout, optimiser le programme et montrer les ressemblances entre les deux
+Or, pour le programme *mirrorMosaic*, cela m'a fortement mis des bâton dans les roues car à chaque tour, la valeur mosaicCanvasX tombait sur une valeur paire, ce qui empêchait l'impression des miroirs horizontaux. J'ai donc utilisé le code qu'il y a actuellement pour *mirrorMosaic*, et l'ai plus tard ré-implémenté dans *mosaic* histoire d'harmoniser le tout, optimiser le programme et montrer les ressemblances entre les deux.
 
 ## ⭐⭐⭐ mirrorMosaic
 ![image](./images/logo.png) ![image](./output/15_mirrorMosaic.png)
