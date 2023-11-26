@@ -44,6 +44,10 @@ Nus n'avons pas su nous en servir directement car nous ne comprenions pas ce que
 **Explication**
 On parcourt seulement la partie gauche de l'image qu'on a divisé à la moitié de la longueur de l'image. Puis, on inverse la couleur deux à deux des pixels qui sont symétriques par rapport à l'axe du milieu.
 
+### *mirror2*
+**Explication**
+On parcourt seulement la partie gauche de l'image qu'on a divisé à la moitié de la longueur de l'image. Puis, on inverse la couleur deux à deux des pixels qui sont symétriques par rapport à l'axe du milieu.
+
 ## ⭐⭐ noise
 ![image](./images/logo.png) ![image](./output/07_noise.png)
 **Explication**
