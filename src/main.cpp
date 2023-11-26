@@ -182,7 +182,7 @@ void brightness(sil::Image image)
     }
 }
 
-void disk(sil::Image image,int centerX, int centerY, int thickness){
+void disk(sil::Image image,int centerX, int centerY, int thickness){ //coordonnees du centre du cercle
     // On passe sur tous les x et tous les y, et on accède au pixel correspondant :
     for (int x{0}; x < image.width(); x++)
     {
@@ -198,13 +198,13 @@ void disk(sil::Image image,int centerX, int centerY, int thickness){
     image.save("output/11_disk.png");
 }
 
-void circle (sil::Image & image, int centerX, int centerY, int thickness) {  //coordonnee du centre du cerclee 
+void circle (sil::Image & image, int centerX, int centerY, int thickness) {  //coordonnees du centre du cercle 
     // On passe sur tous les x et tous les y, et on accède au pixel correspondant :
-    for (int x{0}; x < image.width(); x++)//300
+    for (int x{0}; x < image.width(); x++)
     {
-        for (int y{0}; y < image.height(); y++)//345
+        for (int y{0}; y < image.height(); y++)
         {   
-            if(sqrt((x-centerX)*(x-centerX)+(y-centerY)*(y-centerY))<=100.f && sqrt((x-centerX)*(x-centerX)+(y-centerY)*(y-centerY))>=100.f-thickness){  //le centre du cercle a pour coordonnees(255,255)
+            if(sqrt((x-centerX)*(x-centerX)+(y-centerY)*(y-centerY))<=100.f && sqrt((x-centerX)*(x-centerX)+(y-centerY)*(y-centerY))>=100.f-thickness){  
                 image.pixel(x,y).r = 1.f;
                 image.pixel(x,y).g = 1.f;
                 image.pixel(x,y).b = 1.f;
@@ -411,25 +411,25 @@ void normalisation(sil::Image image)
 
 void convolutions (sil::Image image, sil::Image result)
 {
-    int withKernel {};
+    int widthKernel {};
     std::cout << "Entrez la longueur de votre kernel pour votre convolutions (nombre impair) : " ;
-    std::cin >> withKernel;
+    std::cin >> widthKernel;
 
-    while(withKernel%2==0){
+    while(widthKernel%2==0){
         std::cout << "Probleme, vous avez entrez un nombre pair. Veuillez recommencer. " << std::endl;
-        std::cout << "Entrez la dimension de votre kernel pour votre convolutions (nombre impair) :" << std::endl;
-        std::cin >> withKernel;
+        std::cout << "Entrez la longueur de votre kernel pour votre convolutions (nombre impair) :" << std::endl;
+        std::cin >> widthKernel;
     }
     
-    for (int x{0}; x < image.width(); x++)//300
+    for (int x{0}; x < image.width(); x++)
     {
-        for (int y{0}; y < image.height(); y++)//345
+        for (int y{0}; y < image.height(); y++)
         {   
             float red_moy {};
             float blue_moy {};
             float green_moy {};
-            for(int n{x-withKernel/2} ; n<=x+withKernel/2; n++){
-                for(int z{y-withKernel/2} ; z<=y+withKernel/2; z++){
+            for(int n{x-widthKernel/2} ; n<=x+widthKernel/2; n++){
+                for(int z{y-widthKernel/2} ; z<=y+widthKernel/2; z++){
                     if(n>=0 && n<image.width() && z>=0 && z<image.height()){
                         red_moy += image.pixel(n,z).r;
                         blue_moy += image.pixel(n,z).b;
@@ -437,9 +437,9 @@ void convolutions (sil::Image image, sil::Image result)
                     }
                 }
             }
-            result.pixel(x,y).r = red_moy/(static_cast<float>(withKernel)*static_cast<float>(withKernel));
-            result.pixel(x,y).b = blue_moy/(static_cast<float>(withKernel)*static_cast<float>(withKernel));
-            result.pixel(x,y).g = green_moy/(static_cast<float>(withKernel)*static_cast<float>(withKernel));
+            result.pixel(x,y).r = red_moy/(static_cast<float>(widthKernel)*static_cast<float>(widthKernel));
+            result.pixel(x,y).b = blue_moy/(static_cast<float>(widthKernel)*static_cast<float>(widthKernel));
+            result.pixel(x,y).g = green_moy/(static_cast<float>(widthKernel)*static_cast<float>(widthKernel));
 
         }
     }
@@ -584,17 +584,17 @@ int main()
     sil::Image photo{"images/photo.jpg"};
     sil::Image lowContrast{"images/photo_faible_contraste.jpg"};
 
-    // sil::Image blackRectangle{300, 200};
-    // sil::Image blackImagePhoto{500, 500};     //meme format que la photo
-    // sil::Image blackImageLogo{300, 345};      //meme format que le logo
+    sil::Image blackRectangle{300, 200};
+    sil::Image blackImagePhoto{500, 500};     //meme format que la photo
+    sil::Image blackImageLogo{300, 345};      //meme format que le logo
 
     // onlyGreen(logo);
     // changeRedBlue(logo);
-    // { /*noirEtBlanc*/
-    //     sil::Image logo{"images/logo.png"};
-    //     blackAndWhite(logo);
-    //     logo.save("output/03_blackAndWhite.png");
-    // }
+    { /*noirEtBlanc*/
+        sil::Image logo{"images/logo.png"};
+        blackAndWhite(logo);
+        logo.save("output/03_blackAndWhite.png");
+    }
     // negative(logo);
     // gradient(blackRectangle);
     // mirror1(logo); 
@@ -603,26 +603,26 @@ int main()
     // rotation90(logo);
     // RGBSplit(logo, blackImageLogo);
     // brightness(photo);
-    // { /*DISK*/
-    //     float thickness {};
-    //     std::cout << "Entrez le rayon pour votre disque que vous souhaitez :" ;
-    //     std::cin >> thickness;   
-    //     disk(blackImagePhoto, 255, 255, thickness);
-    // }
-    // { /*CIRCLE*/
-    //     float thickness {};
-    //     std::cout << "Entrez l'epaisseur du cercle que vous souhaitez :" ;
-    //     std::cin >> thickness;
-    //     circle(blackImagePhoto, 255, 255,thickness);
-    //     blackImagePhoto.save("output/12_circle.png");
-    // }
-    // { /*ROSACE*/
-    //     float thickness {};
-    //     std::cout << "Entrez l'epaisseur pour les cercles de votre rosace que vous souhaitez :" ;
-    //     std::cin >> thickness;
-    //     sil::Image blackImagePhoto{500, 500};
-    //     rosace(blackImagePhoto,thickness);
-    // }
+    { /*DISK*/
+        float thickness {};
+        std::cout << "Entrez le rayon pour votre disque que vous souhaitez :" ;
+        std::cin >> thickness;   
+        disk(blackImagePhoto, 250, 250, thickness);
+    }
+    { /*CIRCLE*/
+        float thickness {};
+        std::cout << "Entrez l'epaisseur du cercle que vous souhaitez :" ;
+        std::cin >> thickness;
+        circle(blackImagePhoto, 255, 255,thickness);
+        blackImagePhoto.save("output/12_circle.png");
+    }
+    { /*ROSACE*/
+        float thickness {};
+        std::cout << "Entrez l'epaisseur pour les cercles de votre rosace que vous souhaitez :" ;
+        std::cin >> thickness;
+        sil::Image blackImagePhoto{500, 500};
+        rosace(blackImagePhoto,thickness);
+    }
 
     // mosaic(logo);  
     // mirrorMosaic(logo);
@@ -633,73 +633,76 @@ int main()
     // vortex(logo,blackImageLogo);
     // tramage(photo);
     // normalisation(lowContrast);
-    // blackAndWhite(logo); /*cet appel remet à jour 03_noirEtBlanc*/ 
-    // { 
-    //    {
-    //     /*CONVOLUTION*/
-    //     convolutions(logo, blackImageLogo);
-    //    }
-    //    {
-    //     /*AlgoGeneriqueDeConvolution*/
-    //     sil::Image logo{"images/logo.png"};
-    //     sil::Image blackImageLogo{300, 345};
-    //     std::vector<std::vector<float>> kernel {{-1,-1,-1},{-1,8,-1},{-1,-1,-1}};   
-    //     algoGeneriqueDeConvolution(kernel,3,3,logo,blackImageLogo);
-    //     blackImageLogo.save("output/22_algoGeneriqueDeConvolution.png");
-    //    }
-    //    {
-    //     /*FiltresSeparables*/
-    //     sil::Image logo{"images/logo.png"};
-    //     sil::Image blackImageLogo{300, 345};
-    //     sil::Image photo{"images/photo.jpg"};
-    //     sil::Image blackImagePhoto{500, 500};
+    {   /*blackAndWhite*/
+        sil::Image logo{"images/logo.png"};
+        blackAndWhite(logo);
+    }
+    { 
+       {
+        /*CONVOLUTION*/
+        convolutions(logo, blackImageLogo);
+       }
+       {
+        /*AlgoGeneriqueDeConvolution*/
+        sil::Image logo{"images/logo.png"};
+        sil::Image blackImageLogo{300, 345};
+        std::vector<std::vector<float>> kernel {{-1,-1,-1},{-1,8,-1},{-1,-1,-1}};   
+        algoGeneriqueDeConvolution(kernel,3,3,logo,blackImageLogo);
+        blackImageLogo.save("output/22_algoGeneriqueDeConvolution.png");
+       }
+       {
+        /*FiltresSeparables*/
+        sil::Image logo{"images/logo.png"};
+        sil::Image blackImageLogo{300, 345};
+        sil::Image photo{"images/photo.jpg"};
+        sil::Image blackImagePhoto{500, 500};
 
-    //     //creation du kernel
-    //     std::vector<std::vector<float>> kernel {};
-    //     int longueurKernel {};
-    //     std::cout << "Entrez la longueur du kertel que vous souhaitez pour votre filtresSeparables(nombre impair): " ;
-    //     std::cin >> longueurKernel; 
+        //creation du kernel
+        std::vector<std::vector<float>> kernel {};
+        int longueurKernel {};
+        std::cout << "Entrez la longueur du kertel que vous souhaitez pour votre filtresSeparables(nombre impair): " ;
+        std::cin >> longueurKernel; 
 
-    //     while(longueurKernel%2==0){
-    //     std::cout << "Probleme, vous avez entrez un nombre pair. Veuillez recommencer. " << std::endl;
-    //     std::cout << "Entrez la longueur du kertel que vous souhaitez pour votre filtresSeparables(nombre impair) : " ;
-    //     std::cin >> longueurKernel;
-    //     }
+        while(longueurKernel%2==0){
+        std::cout << "Probleme, vous avez entrez un nombre pair. Veuillez recommencer. " << std::endl;
+        std::cout << "Entrez la longueur du kertel que vous souhaitez pour votre filtresSeparables(nombre impair) : " ;
+        std::cin >> longueurKernel;
+        }
          
-    //     std::vector<float> tmp {}; 
-    //     for(int i{1} ; i<= longueurKernel ; i++){
-    //        for(int j{1} ; j<= longueurKernel ; j++){
-    //            tmp.push_back({1.f/(static_cast<float>(longueurKernel)*static_cast<float>(longueurKernel))});
-    //        }
-    //        kernel.push_back(tmp); 
-    //     }
-    //     filtresSeparables(kernel,longueurKernel,logo, blackImageLogo);
-    //     blackImageLogo.save("output/23_filtresSeparables.png");
-    //    }
-    //    {
-    //     /*DifferenceDeGaussienne*/
-    //     sil::Image photo{"images/photo.jpg"};
-    //     sil::Image blackImagePhoto{500, 500};
+        std::vector<float> tmp {}; 
+        for(int i{1} ; i<= longueurKernel ; i++){
+           for(int j{1} ; j<= longueurKernel ; j++){
+               tmp.push_back({1.f/(static_cast<float>(longueurKernel)*static_cast<float>(longueurKernel))});
+           }
+           kernel.push_back(tmp); 
+        }
+        filtresSeparables(kernel,longueurKernel,logo, blackImageLogo);
+        blackImageLogo.save("output/23_filtresSeparables.png");
+       }
+       {
+        /*DifferenceDeGaussienne*/
+        sil::Image photo{"images/photo.jpg"};
+        sil::Image blackImagePhoto{500, 500};
 
-    //     //creation du kernel
-    //     std::vector<std::vector<float>> kernel {};
-    //     int widthKernel {3};
+        //creation du kernel
+        std::vector<std::vector<float>> kernel {};
+        int widthKernel {3};
          
-    //     std::vector<float> tmp {}; 
-    //     for(int i{1} ; i<= widthKernel ; i++){
-    //        for(int j{1} ; j<= widthKernel ; j++){
-    //            tmp.push_back({1.f/(static_cast<float>(widthKernel)*static_cast<float>(widthKernel))});
-    //        }
-    //        kernel.push_back(tmp); 
-    //     }
+        std::vector<float> tmp {}; 
+        for(int i{1} ; i<= widthKernel ; i++){
+           for(int j{1} ; j<= widthKernel ; j++){
+               tmp.push_back({1.f/(static_cast<float>(widthKernel)*static_cast<float>(widthKernel))});
+           }
+           kernel.push_back(tmp); 
+        }
 
-    //     int tau {};
-    //     std::cout << "Veuillez indiquer le tau que vous souhaitez pour votre difference de Gaussienne : ";
-    //     std::cin >> tau;
+        int tau {};
+        std::cout << "Veuillez indiquer le tau que vous souhaitez pour votre difference de Gaussienne : ";
+        std::cin >> tau;
 
-    //     differenceDeGaussiennes(kernel, widthKernel, tau, photo, blackImagePhoto);
-    //    }
-    // }
+        differenceDeGaussiennes(kernel, widthKernel, tau, photo, blackImagePhoto);
+       }
+    }
 
-    // pixelSorting(logo);
+    pixelSorting(logo);
 }
