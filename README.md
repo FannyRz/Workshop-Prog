@@ -101,11 +101,11 @@ C'est pourquoi nous avons utilisé un *for* pour changer les trois composantes d
 ## ⭐⭐ disk
 ![image](./images/blackImagePhoto.png) ![image](./output/11_disk.png)
 **Explication**
-Pour cette fonction, nous avons utilisé le calcul de la distance entre deux points : $$\sqrt{(x-centerX)^2*(y-centerY)^2}$$
+Pour cette fonction, nous avons utilisé le calcul de la distance entre deux points : $$\sqrt{(x-centerX)^2+(y-centerY)^2}$$ <!--  Petite coquille, mais j'image que vous avez bien mis un + dans votre code -->
 avec (x,y) les coordonnées d'un pixel et (centerX,centerY) les coordonnées du centre du cercle. En utilisant cette formule, il suffit de dire que les pixels ayant une distance à l'origine du cercle plus petite ou égale à cette distance sont compris dans le cercle et deviennent donc blanc.
 De plus, nous avez fait en sort que la personne lançant le programme puisse choisir la grandeur du disque.   
 
-*Remarque : on début on avait directement pris les coordonnées (250,250) au lieu de (centerX, centerY) car notre image noire dans notre cas fait 500x500. Mais pour rendre notre programme plus dynamique, nous avons décider de s'adapter à tout format d'image noire et de pouvoir prendre pour origine de notre cercle n'importe quel point pour pouvoir tracer un cercle n'importe où sur l'image.*
+*Remarque : on début on avait directement pris les coordonnées (250,250) au lieu de (centerX, centerY) car notre image noire dans notre cas fait 500x500. Mais pour rendre notre programme plus dynamique, nous avons décider de s'adapter à tout format d'image noire et de pouvoir prendre pour origine de notre cercle n'importe quel point pour pouvoir tracer un cercle n'importe où sur l'image.*<!-- C'est très bien -->
 
 ## ⭐ circle
 ![image](./images/blackImagePhoto.png) ![image](./output/12_circle.png)

@@ -199,6 +199,7 @@ void circle (sil::Image & image, int centerX, int centerY, int thickness) {  //c
     {
         for (int y{0}; y < image.height(); y++)
         {   
+            // Vous calculez deux fois `sqrt((x-centerX)*(x-centerX)+(y-centerY)*(y-centerY))`. Vous auriez pu stocker le résultat dans une variable et ensuite utiliser cette variable deux fois. Ca fait moins de calculs et un code plus lisible.
             if(sqrt((x-centerX)*(x-centerX)+(y-centerY)*(y-centerY))<=100.f && sqrt((x-centerX)*(x-centerX)+(y-centerY)*(y-centerY))>=100.f-thickness){  
                 image.pixel(x,y).r = 1.f;
                 image.pixel(x,y).g = 1.f;
@@ -296,7 +297,7 @@ void glitch(sil::Image image)
 }
 
 void fractal(sil::Image image){
-    for (float x{-(static_cast<float>(image.width())/200.f)}; x <= (static_cast<float>(image.width())/200.f); x= x+0.01f)
+    for (float x{-(static_cast<float>(image.width())/200.f)}; x <= (static_cast<float>(image.width())/200.f); x= x+0.01f) // Le risque en itérant comme ça c'est que vous risquez de manquer certains pixels. Il vaut mieux itérer sur tous les x et y de l'image, puis les convertir en float entre -2 et 2 au moment de calculer votre complexe c
     {
         for (float y{-(static_cast<float>(image.height())/200.f)}; y <= (static_cast<float>(image.height())/200.f); y= y+0.01f)
         {
@@ -473,7 +474,7 @@ void algoGeneriqueDeConvolution(std::vector<std::vector<float>> kernel, int lign
                     indiceLigneMatrice = ligneKernel-1;
                 }
                 if(total!=0){
-                    result.pixel(x,y).r = red_moy/total;
+                    result.pixel(x,y).r = red_moy/total; // Cette normalisation par le total est spécifique au blur, on ne veut pas la faire dans tous les cas. Cette normalisation sert à garantir que la luminosité globale de l'image va être préservée. Mais le but de certains kernels est justement de changer la luminosité. D'où le fait que cette division n'est pas toujours désirable, et elle sera incorporée directement dans le kernel si ce dernier en a besoin (e.g. on mettre des 1/9 dans le kernel de blur au lieu de mettre des 1)
                     result.pixel(x,y).b = blue_moy/total;
                     result.pixel(x,y).g = green_moy/total;
                 }else{
